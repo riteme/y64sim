@@ -1,10 +1,8 @@
-import collections
+from collections import namedtuple
 
-# TODO: enumerations for types
-
-class Byte(collections.namedtuple('BaseByte', ['high', 'low'])):
+class Byte(namedtuple('BaseByte', ['high', 'low'])):
     def __str__(self):
-        return f'{self.high}{self.low}'
+        return f'{format(self.high, "x")}{format(self.low, "x")}'
 
     def __int__(self):
-        return int(str(self), base=16)
+        return self.high * 16 + self.low
