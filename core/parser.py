@@ -3,6 +3,7 @@ from collections import namedtuple
 
 from core import log
 from .datatypes import Byte
+from .memory import MAX_VIRTUAL_ADDRESS
 
 @unique
 class DiagnosticType(Enum):
@@ -50,7 +51,14 @@ class Parser:
                     Diagnostic(DiagnosticType.ERROR, lineos, 'incorrect byte sequence length.')
                 )
                 continue
+
             self.max_address = max(self.max_address, address + max(0, len(sequence) // 2 - 1))
+            if self.max_address > MAX_VIRTUAL_ADDRESS:
+                self.diagnostics.append(
+                    Diagnostic(DiagnosticType.ERROR, lineos, f'address too large, which exceeds {MAX_VIRTUAL_ADDRESS}.')
+                )
+                return
+
             if len(self.bytes) <= self.max_address:
                 self.bytes += [None] * (self.max_address - len(self.bytes) + 1)
 
@@ -59,6 +67,7 @@ class Parser:
                     self.diagnostics.append(
                         Diagnostic(DiagnosticType.WARN, lineos, f'overlapped bytes at {hex(address + i)}.')
                     )
+
                 self.bytes[address + i] = Byte(
                     int(sequence[2 * i], base=16),
                     int(sequence[2 * i + 1], base=16)
