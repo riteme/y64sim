@@ -2,7 +2,6 @@ from enum import Enum, unique
 from collections import namedtuple
 
 from core import log
-from .datatypes import Byte
 from .memory import MAX_VIRTUAL_ADDRESS
 
 @unique
@@ -68,7 +67,4 @@ class Parser:
                         Diagnostic(DiagnosticType.WARN, lineos, f'overlapped bytes at {hex(address + i)}.')
                     )
 
-                self.bytes[address + i] = Byte(
-                    int(sequence[2 * i], base=16),
-                    int(sequence[2 * i + 1], base=16)
-                )
+                self.bytes[address + i] = int(sequence[2 * i] + sequence[2 * i + 1], base=16)

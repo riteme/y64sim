@@ -1,14 +1,12 @@
-import copy
-
 from core import log
 from .buffer import Buffer, BufferMode
-from .datatypes import Byte, InvalidMemoryAccess, InvalidMemoryLock
+from .datatypes import InvalidMemoryAccess, LockedMemory, InvalidMemoryLock
 
 MAX_VIRTUAL_ADDRESS = 65536
-UNINITIALIZED_BYTE = Byte(0, 0)
+UNINITIALIZED_BYTE = 0
 
 class Memory:
-    def __init__(self, size):
+    def __init__(self, size=MAX_VIRTUAL_ADDRESS):
         self.size = size
         self.max_address = size - 1
         self._mem = [None] * size
@@ -37,7 +35,7 @@ class Memory:
 
     def check_not_locked(self, start_address, size=1):
         if self.is_locked(self, start_address, size):
-            raise InvalidMemoryAccess(start_address, size, 'locked memory')
+            raise LockedMemory(start_address, size, 'locked memory')
 
     def check_address(self, address):
         self.check_valid(address)
@@ -60,7 +58,7 @@ class Memory:
                 raise InvalidMemoryLock(address, 'unlock')
             self._lock[address] -= 1
 
-    def read(self, start_address, size=1):
+    def read(self, start_address, size=1) -> bytes:
         content = []
         for address in range(size, start=start_address):
             self.check_address(address)
@@ -69,19 +67,19 @@ class Memory:
                 content.append(UNINITIALIZED_BYTE)
             else:
                 content.append(self._mem[address])
-        return content
+        return bytes(content)
 
-    def _write(self, start_address, content):
+    def _write(self, start_address, content: bytes):
         for address, byte in enumerate(content, start=start_address):
             self.check_valid(address)  # writes are not rejected by locks
             if not self.is_locked(address):
                 log.warn(f'an unprotected write occurred at {hex(address)}.')
             self._mem[address] = byte
 
-    def write(self, start_address, content):  # actually write operation is deferred to flush
-        self._buffer.push((start_address, copy.copy(content)))
+    def write(self, start_address, content: bytes):  # actually write operation is deferred to flush
+        self._buffer.push((start_address, content))
 
-    def discard_buffer(self):
+    def discard(self):
         self._buffer.clear()
 
     def flush(self):
@@ -90,7 +88,11 @@ class Memory:
                 self._write(address, content)
             self._buffer.clear()
 
-    def load(self, start_address, content):  # direct write
+    def load(self, start_address, content: bytes):  # direct write
         self.lock(start_address, len(content))
         self._write(start_address, content)
         self.unlock(start_address, len(content))
+
+    def __str__(self):
+        # TODO: str() for Memory
+        raise NotImplementedError

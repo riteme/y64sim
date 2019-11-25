@@ -1,48 +1,65 @@
-from collections import namedtuple
-
 NOT_AVAILABLE = '(not available)'
 
-class Byte(namedtuple('BaseByte', ['high', 'low'])):  # TODO: do not inherit from a non-class object (namedtuple)
-    def __str__(self):
-        return f'{format(self.high, "x")}{format(self.low, "x")}'
-
-    def __int__(self):
-        return self.high * 16 + self.low
-
 class InvalidMemoryAccess(Exception):
-    def __init__(self, address, size=1, reason=NOT_AVAILABLE):
+    def __init__(self, address, size=1, info=NOT_AVAILABLE):
         super().__init__()
         self.address = address
         self.size = size
-        self.reason = reason
+        self.info = info
 
     def __str__(self):
-        return f'invalid access to {hex(self.address)} [size = {self.size}]; reason: {self.reason}'
+        return f'invalid access to {hex(self.address)} [size = {self.size}]; info: {self.info}'
+
+class LockedMemory(Exception):
+    def __init__(self, address, size=1, info=NOT_AVAILABLE):
+        super().__init__()
+        self.address = address
+        self.size = size
+        self.info = info
+
+    def __str__(self):
+        return f'failed to access locked memory at {hex(self.address)}; info: {self.info}'
 
 class InvalidMemoryLock(Exception):
-    def __init__(self, address, size=1, operation=NOT_AVAILABLE):
+    def __init__(self, address, size=1, info=NOT_AVAILABLE):
         super().__init__()
         self.address = address
         self.size = size
-        self.operation = operation
+        self.info = info
 
     def __str__(self):
-        return f'failed to lock/unlock at {hex(self.address)} [size = {self.size}]; operation: {self.operation}'
+        return f'failed to lock/unlock at {hex(self.address)} [size = {self.size}]; info: {self.info}'
 
 class InvalidRegisterAccess(Exception):
-    def __init__(self, name, reason=NOT_AVAILABLE):
+    def __init__(self, name, info=NOT_AVAILABLE):
         super().__init__()
         self.name = name
-        self.reason = reason
+        self.info = info
 
     def __str__(self):
-        return f'invalid register name: {self.name}; reason: {self.reason}'
+        return f'invalid register name: {self.name}; info: {self.info}'
+
+class LockedRegister(Exception):
+    def __init__(self, name, info=NOT_AVAILABLE):
+        super().__init__()
+        self.name = name
+        self.info = info
+
+    def __str__(self):
+        return f'failed to access locked register {self.name}; info: {self.info}'
 
 class InvalidRegisterLock(Exception):
-    def __init__(self, name, operation=NOT_AVAILABLE):
+    def __init__(self, name, info=NOT_AVAILABLE):
         super().__init__()
         self.name = name
-        self.operation = operation
+        self.info = info
 
     def __str__(self):
-        return f'failed to lock/unlock on register {self.name}; operation: {self.operation}'
+        return f'failed to lock/unlock on register {self.name}; info: {self.info}'
+
+class Halt(Exception):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def __str__(self):
+        return 'halt down'

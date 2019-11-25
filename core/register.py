@@ -2,7 +2,7 @@ import copy
 
 from core import log
 from .buffer import Buffer, BufferMode
-from .datatypes import InvalidRegisterAccess, InvalidRegisterLock
+from .datatypes import InvalidRegisterAccess, LockedRegister, InvalidRegisterLock
 
 DEFAULT_REGISTER_VALUE = 0
 
@@ -29,7 +29,7 @@ class Register:
 
     def check_not_locked(self, name):
         if self.is_locked(name):
-            raise InvalidRegisterAccess(name, 'locked register')
+            raise LockedRegister(name, 'locked register')
 
     def check_register(self, name):
         self.check_valid(name)
@@ -59,7 +59,7 @@ class Register:
     def write(self, name, value):
         self.buffer.append((name, copy.copy(name)))
 
-    def discard_buffer(self):
+    def discard(self):
         self.buffer.clear()
 
     def flush(self):
@@ -72,3 +72,13 @@ class Register:
         self.lock(name)
         self._write(name, value)
         self.unlock(name)
+
+    def __getitem__(self, name):
+        return self.read(name)
+
+    def __setitem__(self, name, value):
+        return self.write(name, value)
+
+    def __str__(self):
+        # TODO: str() for Register
+        raise NotImplementedError

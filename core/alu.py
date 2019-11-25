@@ -4,8 +4,8 @@ from enum import Enum, unique
 BIT_COUNT = 64
 SIGNED_MAX = 2**(BIT_COUNT - 1) - 1  # 2^63 - 1
 SIGNED_MIN = -2**(BIT_COUNT - 1)     # -2^63
-INTEGER_MASK = 2**BIT_COUNT - 1       # 2^64 - 1 = 1111...1111
-SIGN_BIT = 1 << (BIT_COUNT - 1)       # 2^64 = 1000...0000
+INTEGER_MASK = 2**BIT_COUNT - 1      # 2^64 - 1 = 1111...1111
+SIGN_BIT = 1 << (BIT_COUNT - 1)      # 2^64 = 1000...0000
 
 @unique
 class Arithmetic(Enum):

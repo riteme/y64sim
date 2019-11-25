@@ -36,8 +36,8 @@ if no_error:
     for i in range(0, len(parser.bytes), 16):
         for j in range(0, min(16, len(parser.bytes) - i)):
             byte = parser.bytes[i + j]
-            if byte:
-                sys.stdout.write(f'{parser.bytes[i + j]} ')
-            else:
+            if byte is None:
                 sys.stdout.write('xx ')
+            else:
+                sys.stdout.write(f'{format(parser.bytes[i + j], "02x")} ')
         sys.stdout.write('\n')

@@ -1,9 +1,11 @@
 from .datatypes import (
-    Byte,
     InvalidMemoryAccess,
+    LockedMemory,
     InvalidMemoryLock,
     InvalidRegisterAccess,
-    InvalidRegisterLock
+    LockedRegister,
+    InvalidRegisterLock,
+    Halt
 )
 
 from .buffer import (
@@ -32,5 +34,6 @@ from .alu import (
     signed,
     BIT_COUNT,
     SIGNED_MAX,
-    SIGNED_MIN
+    SIGNED_MIN,
+    INTEGER_MASK
 )
