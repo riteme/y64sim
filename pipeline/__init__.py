@@ -1,7 +1,7 @@
 from .proc import (
     Processor,
+    ProcessorState,
     Registers,
     Stages,
-    ProcessorState,
-    REGISTER_DICT
+    MAX_CYCLE
 )

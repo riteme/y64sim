@@ -8,5 +8,5 @@ KEEP IN MIND:
 
 1. Lock resources in Decode Stage.
 2. Handle forwarding in Execute Stage & Memory Stage.
-3. Unlock resources in Memory Stage & Write Stage.
+3. Unlock resources in Execute Stage (for CC) & Memory Stage & Write Stage.
 4. PC prediction & correction logic.

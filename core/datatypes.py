@@ -63,3 +63,17 @@ class Halt(Exception):
 
     def __str__(self):
         return 'halt down'
+
+class InvalidInstruction(Exception):
+    def __init__(self, address, bytecode=None):
+        self.address = address
+
+        if bytecode is None:
+            self.bytecode = NOT_AVAILABLE
+        elif isinstance(bytecode, int):
+            self.bytecode = format(bytecode, '02x')
+        else:
+            self.bytecode = bytecode
+
+    def __str__(self):
+        return f'invalid instruction at {hex(self.address)} with bytecode "{self.bytecode}"'

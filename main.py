@@ -2,10 +2,10 @@
 
 import io
 import sys
-import core
 import argparse
 
-from core import log
+from core import log, Parser, DiagnosticType
+from pipeline import Processor, ProcessorState, impl
 from pathlib import Path
 
 parser = argparse.ArgumentParser()
@@ -20,24 +20,33 @@ if not Path(args.file).is_file():
     log.fatal(f'File "{args.file}" not found or does not refer to a file.')
 
 with io.open(args.file, 'r') as fp:
-    parser = core.parser.Parser(fp)
+    parser = Parser(fp)
 
 no_error = True
 if parser.diagnostics:
     for dtype, lineos, message in parser.diagnostics:
-        if dtype == core.parser.DiagnosticType.ERROR:
+        if dtype == DiagnosticType.ERROR:
             no_error = False
             log.error(f'@{lineos}: {message}')
-        elif dtype == core.parser.DiagnosticType.WARN:
+        elif dtype == DiagnosticType.WARN:
             log.warn(f'@{lineos}: {message}')
 
-if no_error:
-    log.debug(f'max address: {hex(parser.max_address)}')
-    for i in range(0, len(parser.bytes), 16):
-        for j in range(0, min(16, len(parser.bytes) - i)):
-            byte = parser.bytes[i + j]
+def print_bytes(content):
+    for i in range(0, len(content), 16):
+        for j in range(0, min(16, len(content) - i)):
+            byte = content[i + j]
             if byte is None:
                 sys.stdout.write('xx ')
             else:
-                sys.stdout.write(f'{format(parser.bytes[i + j], "02x")} ')
+                sys.stdout.write(f'{format(content[i + j], "02x")} ')
         sys.stdout.write('\n')
+
+if no_error:
+    log.debug(f'max address: {hex(parser.max_address)}')
+    print_bytes(parser.bytes)
+    proc = Processor(parser.bytes)
+    while proc.state == ProcessorState.NORMAL:
+        impl.fetch(proc)
+        impl.print_pipeline(proc)
+        impl.run(proc)
+        impl.print_proc(proc)

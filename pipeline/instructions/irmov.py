@@ -1,38 +1,38 @@
 # IRMOV (0x30)
 
-from core import Register, Memory, ALU
-from pipeline.proc import Processor, Registers
+from core import Register, log
+from pipeline.proc import Processor
 from pipeline.utils import *
 from pipeline.literals import *
+from pipeline.none import *
 
-from .nop import *
-
-class IRMOV(NOP):
+class IRMOV(NONE):
     def __init__(self, byte):
         if byte != 0x30:
             raise MismatchedSignature
 
     def __str__(self):
-        return f'mov {self.value}, %{self.dst}'
+        return f'mov ${self.value}, %{self.dst}'
 
-    def fetch(self, rip, D: Register, proc: Processor):
-        _, D[rB] = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
-        D[valC] = int.from_bytes(proc.memory.read(rip + 2, 8), LE)
-        proc.rip = rip + 10
-        proc.file.lock(D[rB])
-        self.dst = D[rB]
-        self.value = D[valC]
+    def setup(self, proc: Processor, rip):
+        _, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
+        self.value = int.from_bytes(proc.memory.read(rip + 2, 8), LE)
 
-    def decode(self, D: Register, E: Register, proc: Processor):
+    def fetch(self, proc: Processor, F: Register, D: Register):
+        D[rB], D[valC] = self.dst, self.value
+        proc.rip = F[rip] + 10
+
+    def decode(self, proc: Processor, D: Register, E: Register):
         E[valC], E[rB] = D[valC], D[rB]
+        proc.file.lock(D[rB])
 
-    def execute(self, E: Register, M: Register, proc: Processor):
+    def execute(self, proc: Processor, E: Register, M: Register):
         M[valE], M[rB] = E[valC], E[rB]
         proc.forward[E_valE] = E[valC]
 
-    def memory(self, M: Register, W: Register, proc: Processor):
-        W[valE], W[rB] = M[valE], W[rB]
+    def memory(self, proc: Processor, M: Register, W: Register, ):
+        W[valE], W[rB] = M[valE], M[rB]
 
-    def write(self, W: Register, proc: Processor):
+    def write(self, proc: Processor, W: Register, _):
         proc.file[W[rB]] = W[valE]
         proc.file.unlock(W[rB])

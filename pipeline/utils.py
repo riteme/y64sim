@@ -1,4 +1,4 @@
-from core import Register, ALU
+from core import Register, ALU, log
 from .proc import Registers
 
 def retrieve(idx):

@@ -2,9 +2,10 @@
 
 # Basic registers
 rsp = ''
+rip = ''
 
 # Pipeline registers
-stat = ''
+state = ''
 icode = ''
 ifunc = ''
 rA = ''

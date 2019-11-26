@@ -1,5 +1,3 @@
-import copy
-
 from core import log
 from .buffer import Buffer, BufferMode
 from .datatypes import InvalidRegisterAccess, LockedRegister, InvalidRegisterLock
@@ -8,10 +6,12 @@ DEFAULT_REGISTER_VALUE = 0
 
 # Basic principles are the same as module memory
 class Register:
-    def __init__(self, names, buffer_mode=BufferMode.QUEUE):
+    def __init__(self, names, buffer_mode=BufferMode.QUEUE, report_unprotected_write=True):
         self._file = {}
         self._lock = {}
         self.buffer = Buffer(buffer_mode)
+        self.lock_buffer = Buffer(buffer_mode)
+        self.report_unprotected_write = report_unprotected_write
 
         for name in names:
             self._file[name] = DEFAULT_REGISTER_VALUE
@@ -24,7 +24,7 @@ class Register:
         return name in self._file and self._lock[name] > 0
 
     def check_valid(self, name):
-        if not self.is_valid(self, name):
+        if not self.is_valid(name):
             raise InvalidRegisterAccess(name, 'invalid register')
 
     def check_not_locked(self, name):
@@ -35,32 +35,52 @@ class Register:
         self.check_valid(name)
         self.check_not_locked(name)
 
-    def lock(self, name):
+    def _modify_lock_count(self, name, delta):
         self.check_valid(name)
-        self._lock[name] += 1
+        if self._lock[name] + delta < 0:
+            log.debug(f'lock counts goes negative on register "{name}".')
+            assert delta < 0
+            raise InvalidRegisterLock(name, 'unlock')
+        self._lock[name] += delta
+        log.debug(f'register: _lock[{name}] += {delta} → {self._lock[name]}')
+
+    def _lock(self, name):
+        self._modify_lock_count(name, +1)
+
+    def _unlock(self, name):
+        self._modify_lock_count(name, -1)
+
+    def lock(self, name):
+        self.lock_buffer.push((name, +1))
+
+    def lock_all(self):
+        for name in self._file.keys():
+            self.lock(name)
 
     def unlock(self, name):
-        self.check_valid(name)
-        if self._lock[name] == 0:
-            log.debug(f'lock counts goes negative on register {name}.')
-            raise InvalidRegisterLock(name, 'unlock')
-        self._lock[name] -= 1
+        self.lock_buffer.push((name, -1))
+
+    def unlock_all(self):
+        for name in self._file.keys():
+            self.unlock(name)
 
     def read(self, name):
         self.check_register(name)
         return self._file[name]
 
-    def _write(self, name, value):
+    def _write(self, name, value, lock_check=True):
         self.check_valid(name)
-        if not self.is_locked(name):
-            log.warn(f'an unprotected write occurred on register {name}.')
+        if self.report_unprotected_write and lock_check and not self.is_locked(name):
+            log.warn(f'an unprotected write occurred on register "{name}".')
         self._file[name] = value
 
     def write(self, name, value):
-        self.buffer.append((name, copy.copy(name)))
+        self.check_valid(name)
+        self.buffer.push((name, value))
 
     def discard(self):
         self.buffer.clear()
+        self.lock_buffer.clear()
 
     def flush(self):
         if len(self.buffer) > 0:
@@ -68,10 +88,13 @@ class Register:
                 self._write(name, value)
             self.buffer.clear()
 
+        if len(self.lock_buffer) > 0:
+            for name, delta in self.lock_buffer:
+                self._modify_lock_count(name, delta)
+            self.lock_buffer.clear()
+
     def load(self, name, value):
-        self.lock(name)
-        self._write(name, value)
-        self.unlock(name)
+        self._write(name, value, lock_check=False)
 
     def __getitem__(self, name):
         return self.read(name)
@@ -81,4 +104,4 @@ class Register:
 
     def __str__(self):
         # TODO: str() for Register
-        raise NotImplementedError
+        return str(self._file)

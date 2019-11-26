@@ -76,4 +76,4 @@ class ALU:
             Arithmetic.AND: self._and,
             Arithmetic.XOR: self._xor,
             Arithmetic.OR: self._or
-        }[op](lhs, rhs)
+        }[Arithmetic(op)](lhs, rhs)
