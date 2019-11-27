@@ -52,6 +52,7 @@ class Register:
         self._modify_lock_count(name, -1)
 
     def lock(self, name):
+        self.check_valid(name)
         self.lock_buffer.push((name, +1))
 
     def lock_all(self):
@@ -59,6 +60,7 @@ class Register:
             self.lock(name)
 
     def unlock(self, name):
+        self.check_valid(name)
         self.lock_buffer.push((name, -1))
 
     def unlock_all(self):

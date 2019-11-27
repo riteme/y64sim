@@ -66,9 +66,11 @@ class Memory:
         self._modify_lock_count(start_address, size, -1)
 
     def lock(self, start_address, size=1):
+        self.check_valid(start_address, size)
         self._lock_buffer.push((start_address, size, +1))
 
     def unlock(self, start_address, size=1):
+        self.check_valid(start_address, size)
         self._lock_buffer.push((start_address, size, -1))
 
     def read(self, start_address, size=1) -> bytes:
