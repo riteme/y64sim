@@ -49,6 +49,7 @@ class JMP(NONE):
             JumpType.jge: not (SF ^ OF),
             JumpType.jg: (not (SF ^ OF)) & (not ZF)
         }[E[ifunc]]
+
         log.debug(f'condition = {ok}')
         if not ok:
             raise BranchMisprediction(E[valC])

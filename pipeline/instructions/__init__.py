@@ -1,6 +1,7 @@
 from .halt import HALT
 from .nop import NOP
 from .rrmov import RRMOV
+from .cmov import CMOV
 from .irmov import IRMOV
 from .rmmov import RMMOV
 from .mrmov import MRMOV
@@ -16,6 +17,7 @@ INSTRUCTIONS = [
     HALT,
     NOP,
     RRMOV,
+    CMOV,
     IRMOV,
     RMMOV,
     MRMOV,

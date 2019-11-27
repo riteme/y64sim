@@ -1,0 +1,7 @@
+0x000: 6300                 | xorq %rax, %rax
+0x002: 30f20100000000000000 | irmovq $1, %rdx
+0x00c: 30f10200000000000000 | irmovq $2, %rcx
+0x016: 30f80300000000000000 | irmovq $3, %r8
+0x020: 2321                 | cmove %rdx, %rcx
+0x022: 2418                 | cmovne %rcx, %r8
+0x024: 00                   | halt
