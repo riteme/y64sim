@@ -1,0 +1,481 @@
+(info) New instruction fetched at 0x0: "mov $256, %rsp" [0x30]
+(info) [cycle = 0] current pipeline:
+      FETCH: mov $256, %rsp
+     DECODE: (no instruction)
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 0, 'rbp': 0, 'rsi': 0, 'rdi': 0, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 10, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0xa: "call 0x38" [0x80]
+(info) [cycle = 1] current pipeline:
+      FETCH: call 0x38
+     DECODE: mov $256, %rsp
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 0, 'rbp': 0, 'rsi': 0, 'rdi': 0, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 56, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x38: "mov $24, %rdi" [0x30]
+(info) [cycle = 2] current pipeline:
+      FETCH: mov $24, %rdi
+     DECODE: call 0x38
+    EXECUTE: mov $256, %rsp
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 0, 'rbp': 0, 'rsi': 0, 'rdi': 0, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 66, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x42: "mov $4, %rsi" [0x30]
+(info) [cycle = 3] current pipeline:
+      FETCH: mov $4, %rsi
+     DECODE: mov $24, %rdi
+    EXECUTE: call 0x38
+     MEMORY: mov $256, %rsp
+      WRITE: (no instruction)
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 0, 'rbp': 0, 'rsi': 0, 'rdi': 0, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 76, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x4c: "call 0x56" [0x80]
+(info) [cycle = 4] current pipeline:
+      FETCH: call 0x56
+     DECODE: mov $4, %rsi
+    EXECUTE: mov $24, %rdi
+     MEMORY: call 0x38
+      WRITE: mov $256, %rsp
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 256, 'rbp': 0, 'rsi': 0, 'rdi': 0, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 86, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x56: "xor %rax, %rax" [0x63]
+(info) [cycle = 5] current pipeline:
+      FETCH: xor %rax, %rax
+     DECODE: call 0x56
+    EXECUTE: mov $4, %rsi
+     MEMORY: mov $24, %rdi
+      WRITE: call 0x38
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 248, 'rbp': 0, 'rsi': 0, 'rdi': 0, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 88, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x58: "and %rsi, %rsi" [0x62]
+(info) [cycle = 6] current pipeline:
+      FETCH: and %rsi, %rsi
+     DECODE: xor %rax, %rax
+    EXECUTE: call 0x56
+     MEMORY: mov $4, %rsi
+      WRITE: mov $24, %rdi
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 248, 'rbp': 0, 'rsi': 0, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 90, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x5a: "jmp 0x83" [0x70]
+(info) [cycle = 7] current pipeline:
+      FETCH: jmp 0x83
+     DECODE: and %rsi, %rsi
+    EXECUTE: xor %rax, %rax
+     MEMORY: call 0x56
+      WRITE: mov $4, %rsi
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 248, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 131, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x83: "jne 0x63" [0x74]
+(info) [cycle = 8] current pipeline:
+      FETCH: jne 0x63
+     DECODE: jmp 0x83
+    EXECUTE: and %rsi, %rsi
+     MEMORY: xor %rax, %rax
+      WRITE: call 0x56
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 99, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x63: "mov 0(%rdi), %r10" [0x50]
+(info) [cycle = 9] current pipeline:
+      FETCH: mov 0(%rdi), %r10
+     DECODE: jne 0x63
+    EXECUTE: jmp 0x83
+     MEMORY: and %rsi, %rsi
+      WRITE: xor %rax, %rax
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 109, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6d: "add %r10, %rax" [0x60]
+(info) [cycle = 10] current pipeline:
+      FETCH: add %r10, %rax
+     DECODE: mov 0(%rdi), %r10
+    EXECUTE: jne 0x63
+     MEMORY: jmp 0x83
+      WRITE: and %rsi, %rsi
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 11] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: mov 0(%rdi), %r10
+     MEMORY: jne 0x63
+      WRITE: jmp 0x83
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 12] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: (no instruction)
+     MEMORY: mov 0(%rdi), %r10
+      WRITE: jne 0x63
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 0, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 121, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x79: "add $18446744073709551615, %rsi" [0xc0]
+(info) [cycle = 13] current pipeline:
+      FETCH: add $18446744073709551615, %rsi
+     DECODE: add $8, %rdi
+    EXECUTE: add %r10, %rax
+     MEMORY: (no instruction)
+      WRITE: mov 0(%rdi), %r10
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 55835426829, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 131, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x83: "jne 0x63" [0x74]
+(info) [cycle = 14] current pipeline:
+      FETCH: jne 0x63
+     DECODE: add $18446744073709551615, %rsi
+    EXECUTE: add $8, %rdi
+     MEMORY: add %r10, %rax
+      WRITE: (no instruction)
+(info) registers: {'rax': 0, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 55835426829, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 99, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x63: "mov 0(%rdi), %r10" [0x50]
+(info) [cycle = 15] current pipeline:
+      FETCH: mov 0(%rdi), %r10
+     DECODE: jne 0x63
+    EXECUTE: add $18446744073709551615, %rsi
+     MEMORY: add $8, %rdi
+      WRITE: add %r10, %rax
+(info) registers: {'rax': 55835426829, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 24, 'r8': 0, 'r9': 0, 'r10': 55835426829, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 109, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6d: "add %r10, %rax" [0x60]
+(info) [cycle = 16] current pipeline:
+      FETCH: add %r10, %rax
+     DECODE: mov 0(%rdi), %r10
+    EXECUTE: jne 0x63
+     MEMORY: add $18446744073709551615, %rsi
+      WRITE: add $8, %rdi
+(info) registers: {'rax': 55835426829, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 4, 'rdi': 32, 'r8': 0, 'r9': 0, 'r10': 55835426829, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 17] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: mov 0(%rdi), %r10
+     MEMORY: jne 0x63
+      WRITE: add $18446744073709551615, %rsi
+(info) registers: {'rax': 55835426829, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 3, 'rdi': 32, 'r8': 0, 'r9': 0, 'r10': 55835426829, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 18] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: (no instruction)
+     MEMORY: mov 0(%rdi), %r10
+      WRITE: jne 0x63
+(info) registers: {'rax': 55835426829, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 3, 'rdi': 32, 'r8': 0, 'r9': 0, 'r10': 55835426829, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 121, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x79: "add $18446744073709551615, %rsi" [0xc0]
+(info) [cycle = 19] current pipeline:
+      FETCH: add $18446744073709551615, %rsi
+     DECODE: add $8, %rdi
+    EXECUTE: add %r10, %rax
+     MEMORY: (no instruction)
+      WRITE: mov 0(%rdi), %r10
+(info) registers: {'rax': 55835426829, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 3, 'rdi': 32, 'r8': 0, 'r9': 0, 'r10': 824646303936, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 131, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x83: "jne 0x63" [0x74]
+(info) [cycle = 20] current pipeline:
+      FETCH: jne 0x63
+     DECODE: add $18446744073709551615, %rsi
+    EXECUTE: add $8, %rdi
+     MEMORY: add %r10, %rax
+      WRITE: (no instruction)
+(info) registers: {'rax': 55835426829, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 3, 'rdi': 32, 'r8': 0, 'r9': 0, 'r10': 824646303936, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 99, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x63: "mov 0(%rdi), %r10" [0x50]
+(info) [cycle = 21] current pipeline:
+      FETCH: mov 0(%rdi), %r10
+     DECODE: jne 0x63
+    EXECUTE: add $18446744073709551615, %rsi
+     MEMORY: add $8, %rdi
+      WRITE: add %r10, %rax
+(info) registers: {'rax': 880481730765, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 3, 'rdi': 32, 'r8': 0, 'r9': 0, 'r10': 824646303936, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 109, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6d: "add %r10, %rax" [0x60]
+(info) [cycle = 22] current pipeline:
+      FETCH: add %r10, %rax
+     DECODE: mov 0(%rdi), %r10
+    EXECUTE: jne 0x63
+     MEMORY: add $18446744073709551615, %rsi
+      WRITE: add $8, %rdi
+(info) registers: {'rax': 880481730765, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 3, 'rdi': 40, 'r8': 0, 'r9': 0, 'r10': 824646303936, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 23] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: mov 0(%rdi), %r10
+     MEMORY: jne 0x63
+      WRITE: add $18446744073709551615, %rsi
+(info) registers: {'rax': 880481730765, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 2, 'rdi': 40, 'r8': 0, 'r9': 0, 'r10': 824646303936, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 24] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: (no instruction)
+     MEMORY: mov 0(%rdi), %r10
+      WRITE: jne 0x63
+(info) registers: {'rax': 880481730765, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 2, 'rdi': 40, 'r8': 0, 'r9': 0, 'r10': 824646303936, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 121, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x79: "add $18446744073709551615, %rsi" [0xc0]
+(info) [cycle = 25] current pipeline:
+      FETCH: add $18446744073709551615, %rsi
+     DECODE: add $8, %rdi
+    EXECUTE: add %r10, %rax
+     MEMORY: (no instruction)
+      WRITE: mov 0(%rdi), %r10
+(info) registers: {'rax': 880481730765, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 2, 'rdi': 40, 'r8': 0, 'r9': 0, 'r10': 12094812457728, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 131, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x83: "jne 0x63" [0x74]
+(info) [cycle = 26] current pipeline:
+      FETCH: jne 0x63
+     DECODE: add $18446744073709551615, %rsi
+    EXECUTE: add $8, %rdi
+     MEMORY: add %r10, %rax
+      WRITE: (no instruction)
+(info) registers: {'rax': 880481730765, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 2, 'rdi': 40, 'r8': 0, 'r9': 0, 'r10': 12094812457728, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 99, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x63: "mov 0(%rdi), %r10" [0x50]
+(info) [cycle = 27] current pipeline:
+      FETCH: mov 0(%rdi), %r10
+     DECODE: jne 0x63
+    EXECUTE: add $18446744073709551615, %rsi
+     MEMORY: add $8, %rdi
+      WRITE: add %r10, %rax
+(info) registers: {'rax': 12975294188493, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 2, 'rdi': 40, 'r8': 0, 'r9': 0, 'r10': 12094812457728, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 109, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6d: "add %r10, %rax" [0x60]
+(info) [cycle = 28] current pipeline:
+      FETCH: add %r10, %rax
+     DECODE: mov 0(%rdi), %r10
+    EXECUTE: jne 0x63
+     MEMORY: add $18446744073709551615, %rsi
+      WRITE: add $8, %rdi
+(info) registers: {'rax': 12975294188493, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 2, 'rdi': 48, 'r8': 0, 'r9': 0, 'r10': 12094812457728, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 29] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: mov 0(%rdi), %r10
+     MEMORY: jne 0x63
+      WRITE: add $18446744073709551615, %rsi
+(info) registers: {'rax': 12975294188493, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 1, 'rdi': 48, 'r8': 0, 'r9': 0, 'r10': 12094812457728, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 111, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6f: "add $8, %rdi" [0xc0]
+(info) [cycle = 30] current pipeline:
+      FETCH: add $8, %rdi
+     DECODE: add %r10, %rax
+    EXECUTE: (no instruction)
+     MEMORY: mov 0(%rdi), %r10
+      WRITE: jne 0x63
+(info) registers: {'rax': 12975294188493, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 1, 'rdi': 48, 'r8': 0, 'r9': 0, 'r10': 12094812457728, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 121, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x79: "add $18446744073709551615, %rsi" [0xc0]
+(info) [cycle = 31] current pipeline:
+      FETCH: add $18446744073709551615, %rsi
+     DECODE: add $8, %rdi
+    EXECUTE: add %r10, %rax
+     MEMORY: (no instruction)
+      WRITE: mov 0(%rdi), %r10
+(info) registers: {'rax': 12975294188493, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 1, 'rdi': 48, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 131, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x83: "jne 0x63" [0x74]
+(info) [cycle = 32] current pipeline:
+      FETCH: jne 0x63
+     DECODE: add $18446744073709551615, %rsi
+    EXECUTE: add $8, %rdi
+     MEMORY: add %r10, %rax
+      WRITE: (no instruction)
+(info) registers: {'rax': 12975294188493, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 1, 'rdi': 48, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 0, 'zero': 0, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 99, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x63: "mov 0(%rdi), %r10" [0x50]
+(info) [cycle = 33] current pipeline:
+      FETCH: mov 0(%rdi), %r10
+     DECODE: jne 0x63
+    EXECUTE: add $18446744073709551615, %rsi
+     MEMORY: add $8, %rdi
+      WRITE: add %r10, %rax
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 1, 'rdi': 48, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 109, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x6d: "add %r10, %rax" [0x60]
+(info) [cycle = 34] current pipeline:
+      FETCH: add %r10, %rax
+     DECODE: mov 0(%rdi), %r10
+    EXECUTE: jne 0x63
+     MEMORY: add $18446744073709551615, %rsi
+      WRITE: add $8, %rdi
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 1, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 140, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x8c: "ret" [0x90]
+(info) [cycle = 35] current pipeline:
+      FETCH: ret
+     DECODE: (no instruction)
+    EXECUTE: (no instruction)
+     MEMORY: jne 0x63
+      WRITE: add $18446744073709551615, %rsi
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 141, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x8d: "halt" [0x0]
+(info) [cycle = 36] current pipeline:
+      FETCH: halt
+     DECODE: ret
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: jne 0x63
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 141, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x8d: "halt" [0x0]
+(info) [cycle = 37] current pipeline:
+      FETCH: halt
+     DECODE: halt
+    EXECUTE: ret
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 141, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x8d: "halt" [0x0]
+(info) [cycle = 38] current pipeline:
+      FETCH: halt
+     DECODE: (no instruction)
+    EXECUTE: halt
+     MEMORY: ret
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 240, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 85, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x55: "ret" [0x90]
+(info) [cycle = 39] current pipeline:
+      FETCH: ret
+     DECODE: (no instruction)
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: ret
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 248, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 86, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x56: "xor %rax, %rax" [0x63]
+(info) [cycle = 40] current pipeline:
+      FETCH: xor %rax, %rax
+     DECODE: ret
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 248, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 88, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x58: "and %rsi, %rsi" [0x62]
+(info) [cycle = 41] current pipeline:
+      FETCH: and %rsi, %rsi
+     DECODE: xor %rax, %rax
+    EXECUTE: ret
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 248, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 90, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x5a: "jmp 0x83" [0x70]
+(info) [cycle = 42] current pipeline:
+      FETCH: jmp 0x83
+     DECODE: and %rsi, %rsi
+    EXECUTE: xor %rax, %rax
+     MEMORY: ret
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 248, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 19, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x13: "halt" [0x0]
+(info) [cycle = 43] current pipeline:
+      FETCH: halt
+     DECODE: (no instruction)
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: ret
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 256, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 19, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x13: "halt" [0x0]
+(info) [cycle = 44] current pipeline:
+      FETCH: halt
+     DECODE: halt
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 256, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 19, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x13: "halt" [0x0]
+(info) [cycle = 45] current pipeline:
+      FETCH: halt
+     DECODE: (no instruction)
+    EXECUTE: halt
+     MEMORY: (no instruction)
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 256, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 19, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x13: "halt" [0x0]
+(info) [cycle = 46] current pipeline:
+      FETCH: halt
+     DECODE: (no instruction)
+    EXECUTE: (no instruction)
+     MEMORY: halt
+      WRITE: (no instruction)
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 256, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 19, 'state': <ProcessorState.NORMAL: 1>}
+(info) New instruction fetched at 0x13: "halt" [0x0]
+(info) [cycle = 47] current pipeline:
+      FETCH: halt
+     DECODE: (no instruction)
+    EXECUTE: (no instruction)
+     MEMORY: (no instruction)
+      WRITE: halt
+(info) registers: {'rax': 188899839028173, 'rcx': 0, 'rdx': 0, 'rbx': 0, 'rsp': 256, 'rbp': 0, 'rsi': 0, 'rdi': 56, 'r8': 0, 'r9': 0, 'r10': 175924544839680, 'r11': 0, 'r12': 0, 'r13': 0, 'r14': 0}
+(info) CC: {'carry': 1, 'zero': 1, 'sign': 0, 'overflow': 0}
+(info) state: {'rip': 19, 'state': <ProcessorState.HALT: 4>}
+(info) Program exits normally.
