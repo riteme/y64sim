@@ -63,18 +63,18 @@ class Processor:
         ], report_unprotected_write=False)
         self.E = Register([
             'state', 'ifunc',
-            'rB',
+            'rA', 'rB',
             'valA', 'valB', 'valC'
         ], report_unprotected_write=False)
         self.M = Register([
             'state',
-            'rB',
-            'valE'
+            'rA', 'rB',
+            'valA', 'valE'
         ], report_unprotected_write=False)
         self.W = Register([
             'state',
-            'rB',
-            'valE'
+            'rA', 'rB',
+            'valE', 'valM'
         ], report_unprotected_write=False)
         self.F.load('state', ProcessorState.NORMAL)
         self.D.load('state', ProcessorState.NORMAL)

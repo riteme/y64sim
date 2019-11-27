@@ -1,4 +1,4 @@
-# for ADD (0x60), SUB (0x61), AND (0x62), XOR (0x63), OR (0x64)
+# ADD (0x60), SUB (0x61), AND (0x62), XOR (0x63), OR (0x64)
 
 from core import Register, Arithmetic
 from pipeline.proc import Processor

@@ -54,7 +54,7 @@ class Memory:
                 log.debug(f'lock count goes negative at {hex(address)}.')
                 raise InvalidMemoryLock(address, 'unlock')
             self._lock[address] += delta
-            log.debug(f'memory: _lock[{hex(address)}] += {delta} -> [{self._lock[address]}]')
+            log.debug(f'memory: _lock[{hex(address)}] += {delta} -> {self._lock[address]}')
 
     def _lock(self, start_address, size=1):
         self._modify_lock_count(start_address, size, +1)
@@ -77,9 +77,11 @@ class Memory:
                 content.append(UNINITIALIZED_BYTE)
             else:
                 content.append(self._mem[address])
+        log.debug(f'memory fetch at {hex(start_address)}: {" ".join(map(lambda x: format(x, "02x"), content))}')
         return bytes(content)
 
     def _write(self, start_address, content: bytes, lock_check=True):
+        log.debug(f'memory write at {hex(start_address)}: {" ".join(map(lambda x: format(x, "02x"), content))}')
         for address, byte in enumerate(content, start=start_address):
             self.check_valid(address)  # writes are not rejected by locks
             if lock_check and not self.is_locked(address):
