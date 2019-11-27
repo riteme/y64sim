@@ -1,3 +1,42 @@
+## 依赖项
+* Python 3 (3.6.8)
+* colorama (0.4.1)
+
+## 运行
+在 Ubuntu 18.04 终端中，准备运行环境：
+
+```shell
+python3 -m venv .venv
+source .venv/bin/activate
+pip install colorama==0.4.1
+```
+
+运行模拟器：
+
+```shell
+python3 main.py test/prog1.yo
+```
+
+对于每个时钟周期，会先输出当前流水线上的所有指令，之后输出时钟周期结束时所有寄存器的值（寄存器文件、条件代码、处理器状态和 PC）。
+
+如果要观察流水线内部的详细运作情况，需要使用 “`-v`” 开关：
+
+```shell
+python3 main.py test/prog1.yo -v
+```
+
+可以将所有输出重定向至某个文件：
+
+```shell
+python3 main.py test.prog1.yo -v > output.log
+```
+
+退出 Virtualenv 环境：
+
+```shell
+deactivate
+```
+
 ## Runtime
 Setup virtual environment:
 
@@ -15,19 +54,19 @@ pip install colorama==0.4.1
 Launch simulator:
 
 ```shell
-python main.py test/prog1.yo
+python3 main.py test/prog1.yo
 ```
 
 Launch simulator with full debug information:
 
 ```shell
-python main.py test/prog1.yo -v
+python3 main.py test/prog1.yo -v
 ```
 
 Redirect output to file:
 
 ```shell
-python main.py test.prog1.yo -v > output.log
+python3 main.py test.prog1.yo -v > output.log
 ```
 
 Exit virtual environment:
