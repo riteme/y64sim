@@ -1,4 +1,4 @@
-# ADD (0x60), SUB (0x61), AND (0x62), XOR (0x63), OR (0x64)
+# IADD (0xc0), ISUB (0xc1), IAND (0xc2), IXOR (0xc3), IOR (0xc4)
 
 from core import Register, Arithmetic
 from pipeline.proc import Processor
@@ -6,31 +6,31 @@ from pipeline.utils import *
 from pipeline.literals import *
 from pipeline.none import *
 
-class OP(NONE):
+class IOP(NONE):
     def __init__(self, byte):
-        if not 0x60 <= byte <= 0x64:
+        if not 0xc0 <= byte <= 0xc4:
             raise MismatchedSignature
 
     def __str__(self):
-        return f'{Arithmetic(self.op).name.lower()} %{self.src}, %{self.dst}'
+        return f'{Arithmetic(self.op).name.lower()} ${self.constant}, %{self.dst}'
 
     def setup(self, proc: Processor, rip):
         _, self.op = split_byte(proc.memory.read(rip)[0])
-        self.src, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
+        _, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
+        self.constant = int.from_bytes(proc.memory.read(rip + 2, 8), LE)
 
     def fetch(self, proc: Processor, F: Register, D: Register, ):
-        D[rA], D[rB], D[ifunc] = self.src, self.dst, self.op
-        proc.rip = F[rip] + 2
+        D[valC], D[rB], D[ifunc] = self.constant, self.dst, self.op
+        proc.rip = F[rip] + 10
 
     def decode(self, proc: Processor, D: Register, E: Register, ):
-        E[valA] = proc.file[D[rA]]
         E[valB] = proc.file[D[rB]]
-        E[ifunc], E[rB] = D[ifunc], D[rB]
+        E[valC], E[ifunc], E[rB] = D[valC], D[ifunc], D[rB]
         proc.file.lock(D[rB])
         proc.cc.lock_all()
 
     def execute(self, proc: Processor, E: Register, M: Register):
-        result = proc.alu.evaluate(E[valB], E[ifunc], E[valA])
+        result = proc.alu.evaluate(E[valB], E[ifunc], E[valC])
         M[valE], M[rB] = result, E[rB]
         copy_cc(proc.alu, proc.cc)
         proc.cc.unlock_all()

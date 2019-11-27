@@ -90,6 +90,7 @@ def fetch(proc: Processor):
 def run(proc: Processor):
     if proc.cycle > MAX_CYCLE:
         log.error(f'The number of cycles exceeds MAX_CYCLE = {MAX_CYCLE}.')
+        proc.core.load('state', ProcessorState.UNKNOWN)
         return
     if proc.state != ProcessorState.NORMAL:
         log.warn('Processor is dead.')

@@ -11,6 +11,7 @@ from .call import CALL
 from .ret import RET
 from .push import PUSH
 from .pop import POP
+from .iop import IOP
 
 # Instruction set
 INSTRUCTIONS = [
@@ -26,5 +27,6 @@ INSTRUCTIONS = [
     CALL,
     RET,
     PUSH,
-    POP
+    POP,
+    IOP
 ]

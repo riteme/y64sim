@@ -19,7 +19,7 @@ def signed(bits):
     bits &= INTEGER_MASK
     # manually detect sign bit
     if bits & SIGN_BIT:
-        return -(SIGNED_MAX + 1 - bits)
+        return -(2**BIT_COUNT - bits)
     else:
         return bits
 
@@ -32,42 +32,47 @@ class ALU:
         self.sign = 0      # negative
         self.overflow = 0  # signed overflow
 
-    def _set_basic_cc(self, value):
-        self.carry = 1 if value >> BIT_COUNT else 0
-        self.zero = 1 if value == 0 else 0
-        self.sign = 1 if value & SIGN_BIT else 0
+    def _set_unsigned_cc(self, value):
+        self.zero = 1 if value & INTEGER_MASK == 0 else 0
+        self.carry = 0 if value & INTEGER_MASK == value else 1
+
+    def _set_signed_cc(self, value):
+        self.sign = 1 if signed(value & INTEGER_MASK) < 0 else 0
+        self.overflow = 0 if SIGNED_MIN <= value <= SIGNED_MAX else 1
 
     def _add(self, lhs, rhs):
         result = lhs + rhs
         signed_result = signed(lhs) + signed(rhs)
-        self._set_basic_cc(result)
-        self.overflow = 0 if SIGNED_MIN <= signed_result <= SIGNED_MAX else 1
+        log.debug(f'lhs = {lhs} ({signed(lhs)}), rhs = {rhs} ({signed(rhs)}) ⇒ unsgined: {result}, signed: {signed_result}')
+        self._set_unsigned_cc(result)
+        self._set_signed_cc(signed_result)
         return result & INTEGER_MASK
 
     def _sub(self, lhs, rhs):
         result = lhs - rhs
         signed_result = signed(lhs) - signed(rhs)
-        self._set_basic_cc(result)
-        self.overflow = 0 if SIGNED_MIN <= signed_result <= SIGNED_MAX else 1
+        log.debug(f'lhs = {lhs} ({signed(lhs)}), rhs = {rhs} ({signed(rhs)}) ⇒ unsgined: {result}, signed: {signed_result}')
+        self._set_unsigned_cc(result)
+        self._set_signed_cc(signed_result)
         return result & INTEGER_MASK
 
     def _and(self, lhs, rhs):
         result = lhs & rhs
-        self._set_basic_cc(result)
-        self.overflow = 0
-        return result & INTEGER_MASK
+        self._set_unsigned_cc(result)
+        self._set_signed_cc(signed(result))
+        return result
 
     def _xor(self, lhs, rhs):
         result = lhs ^ rhs
-        self._set_basic_cc(result)
-        self.overflow = 0
-        return result & INTEGER_MASK
+        self._set_unsigned_cc(result)
+        self._set_signed_cc(signed(result))
+        return result
 
     def _or(self, lhs, rhs):
         result = lhs | rhs
-        self._set_basic_cc(result)
-        self.overflow = 0
-        return result & INTEGER_MASK
+        self._set_unsigned_cc(result)
+        self._set_signed_cc(signed(result))
+        return result
 
     def evaluate(self, lhs, op, rhs):
         return {
