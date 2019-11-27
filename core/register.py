@@ -9,6 +9,7 @@ class Register:
     def __init__(self, names, buffer_mode=BufferMode.QUEUE, report_unprotected_write=True):
         self._file = {}
         self._lock = {}
+        self._forward_map = {}
         self.buffer = Buffer(buffer_mode)
         self.lock_buffer = Buffer(buffer_mode)
         self.report_unprotected_write = report_unprotected_write
@@ -64,7 +65,18 @@ class Register:
         for name in self._file.keys():
             self.unlock(name)
 
-    def read(self, name):
+    def forward(self, name, value):
+        log.debug(f'register: _forward[{name}] = {value}')
+        self._forward_map[name] = value
+
+    def read(self, name, use_forwarding=True):
+        if use_forwarding and name in self._forward_map:
+            if not self.is_valid(name):
+                log.warn(f'invalid forward port "{name}".')
+            value = self._forward_map[name]
+            log.debug(f'register: forward "{name}": {value}')
+            return value
+
         self.check_register(name)
         return self._file[name]
 
@@ -92,6 +104,8 @@ class Register:
             for name, delta in self.lock_buffer:
                 self._modify_lock_count(name, delta)
             self.lock_buffer.clear()
+
+        self._forward_map.clear()
 
     def load(self, name, value):
         self._write(name, value, lock_check=False)

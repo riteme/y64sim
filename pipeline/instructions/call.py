@@ -29,14 +29,18 @@ class CALL(NONE):
         proc.file.lock(rsp)
 
     def execute(self, proc: Processor, E: Register, M: Register):
-        M[valE] = E[valB] - 8
+        value = E[valB] - 8
+        M[valE] = value
         M[valP] = E[valP]
+        proc.file.forward(rsp, value)
 
     def memory(self, proc: Processor, M: Register, W: Register):
         proc.memory.write(M[valE], M[valP].to_bytes(8, LE))
         W[valE] = M[valE]
         proc.memory.unlock(M[valE], 8)
+        proc.file.forward(rsp, M[valE])
 
     def write(self, proc: Processor, W: Register, _):
         proc.file[rsp] = W[valE]
         proc.file.unlock(rsp)
+        proc.file.forward(rsp, W[valE])

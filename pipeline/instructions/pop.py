@@ -28,15 +28,22 @@ class POP(NONE):
         proc.file.lock(D[rA])
 
     def execute(self, proc: Processor, E: Register, M: Register):
-        M[valE] = E[valB] + 8
+        value = E[valB] + 8
+        M[valE] = value
         M[rA], M[valA] = E[rA], E[valA]
+        proc.file.forward(rsp, value)
 
     def memory(self, proc: Processor, M: Register, W: Register):
-        W[valM] = int.from_bytes(proc.memory.read(M[valA], 8), LE)
+        value = int.from_bytes(proc.memory.read(M[valA], 8), LE)
+        W[valM] = value
         W[rA], W[valE] = M[rA], M[valE]
+        proc.file.forward(rsp, M[valE])
+        proc.file.forward(M[rA], value)
 
     def write(self, proc: Processor, W: Register, _):
         proc.file[rsp] = W[valE]
         proc.file[W[rA]] = W[valM]
         proc.file.unlock(rsp)
         proc.file.unlock(W[rA])
+        proc.file.forward(rsp, W[valE])
+        proc.file.forward(W[rA], W[valM])

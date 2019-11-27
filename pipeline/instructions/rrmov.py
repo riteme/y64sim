@@ -28,10 +28,13 @@ class RRMOV(NONE):
 
     def execute(self, proc: Processor, E: Register, M: Register):
         M[valE], M[rB] = E[valA], E[rB]
+        proc.file.forward(E[rB], E[valA])
 
     def memory(self, proc: Processor, M: Register, W: Register):
         W[valE], W[rB] = M[valE], M[rB]
+        proc.file.forward(M[rB], M[valE])
 
     def write(self, proc: Processor, W: Register, _):
         proc.file[W[rB]] = W[valE]
         proc.file.unlock(W[rB])
+        proc.file.forward(W[rB], W[valE])

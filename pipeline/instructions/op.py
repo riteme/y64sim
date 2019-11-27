@@ -35,10 +35,13 @@ class OP(NONE):
         proc.forward[E_valE] = result
         copy_cc(proc.alu, proc.cc)
         proc.cc.unlock_all()
+        proc.file.forward(E[rB], result)
 
     def memory(self, proc: Processor, M: Register, W: Register):
         W[rB], W[valE] = M[rB], M[valE]
+        proc.file.forward(M[rB], M[valE])
 
     def write(self, proc: Processor, W: Register, _):
         proc.file[W[rB]] = W[valE]
         proc.file.unlock(W[rB])
+        proc.file.forward(W[rB], W[valE])

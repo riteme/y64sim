@@ -28,14 +28,18 @@ class PUSH(NONE):
         proc.file.lock(rsp)
 
     def execute(self, proc: Processor, E: Register, M: Register):
-        M[valE] = E[valB] - 8
+        value = E[valB] - 8
+        M[valE] = value
         M[valA] = E[valA]
+        proc.file.forward(rsp, value)
 
     def memory(self, proc: Processor, M: Register, W: Register):
         W[valE] = M[valE]
         proc.memory.write(M[valE], M[valA].to_bytes(8, LE))  # store rsp rather than rsp - 8 in stack
         proc.memory.unlock(M[valE], 8)
+        proc.file.forward(rsp, M[valE])
 
     def write(self, proc: Processor, W: Register, _):
         proc.file[rsp] = W[valE]
         proc.file.unlock(rsp)
+        proc.file.forward(rsp, W[valE])

@@ -34,9 +34,12 @@ class MRMOV(NONE):
         M[rA] = E[rA]
 
     def memory(self, proc: Processor, M: Register, W: Register):
-        W[valM] = int.from_bytes(proc.memory.read(M[valE], 8), LE)
+        value = int.from_bytes(proc.memory.read(M[valE], 8), LE)
+        W[valM] = value
         W[rA] = M[rA]
+        proc.file.forward(M[rA], value)
 
     def write(self, proc: Processor, W: Register, _):
         proc.file[W[rA]] = W[valM]
         proc.file.unlock(W[rA])
+        proc.file.forward(W[rA], W[valM])

@@ -23,14 +23,18 @@ class RET(NONE):
         proc.file.lock(rsp)
 
     def execute(self, proc: Processor, E: Register, M: Register):
-        M[valE] = E[valB] + 8
+        value = E[valB] + 8
+        M[valE] = value
         M[valA] = E[valA]
+        proc.file.forward(rsp, value)
 
     def memory(self, proc: Processor, M: Register, W: Register):
         return_address = int.from_bytes(proc.memory.read(M[valA], 8), LE)
         W[valM], W[valE] = return_address, M[valE]
+        proc.file.forward(rsp, M[valE])
         raise BranchMisprediction(return_address)
 
     def write(self, proc: Processor, W: Register, _):
         proc.file[rsp] = W[valE]
         proc.file.unlock(rsp)
+        proc.file.forward(rsp, W[valE])
