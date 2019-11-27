@@ -18,6 +18,15 @@ def print_bytes(content):
                 sys.stdout.write(f'{format(content[i + j], "02x")} ')
         sys.stdout.write('\n')
 
+def run(program):
+    proc = Processor(program)
+    while proc.state == ProcessorState.NORMAL:
+        impl.fetch(proc)
+        impl.print_pipeline(proc)
+        impl.run(proc)
+        impl.print_proc(proc)
+    return proc.state
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('file', help=".yo file.")
@@ -49,12 +58,12 @@ def main():
         if args.print_bytes:
             print_bytes(parser.bytes)
 
-        proc = Processor(parser.bytes)
-        while proc.state == ProcessorState.NORMAL:
-            impl.fetch(proc)
-            impl.print_pipeline(proc)
-            impl.run(proc)
-            impl.print_proc(proc)
+        status = run(parser.bytes)
+        if status == ProcessorState.HALT:
+            log.info('Program exits normally.')
+        else:
+            log.error(f'Program exited with status "{status.name}".')
+
 
 if __name__ == '__main__':
     main()

@@ -12,7 +12,7 @@ class CALL(NONE):
             raise MismatchedSignature
 
     def __str__(self):
-        return f'call {self.address}'
+        return f'call {hex(self.address)}'
 
     def setup(self, proc: Processor, rip):
         self.address = int.from_bytes(proc.memory.read(rip + 1, 8), LE)
