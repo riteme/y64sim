@@ -134,7 +134,7 @@ def run(proc: Processor):
             for prev_stage in Stages:
                 if prev_stage == stage:
                     break
-                log.debug(f'instruction in {prev_stage.name} is cancelled due to branch misprediction.')
+                log.debug(f'instruction "{proc.stage[prev_stage]}" in {prev_stage.name} is cancelled due to branch misprediction.')
                 proc.stage_register[prev_stage].load('state', ProcessorState.NORMAL)
                 proc.stage[prev_stage] = NONE()
 
