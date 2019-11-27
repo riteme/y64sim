@@ -28,7 +28,13 @@ python3 main.py test/prog1.yo -v
 可以将所有输出重定向至某个文件：
 
 ```shell
-python3 main.py test.prog1.yo -v > output.log
+python3 main.py test/prog1.yo -v > output.log
+```
+
+如果输出过长，只想查看最后的寄存器结果，可以使用 `tail` 命令：
+
+```shell
+python3 main.py test/asumi.yo | tail -4
 ```
 
 退出 Virtualenv 环境：
