@@ -31,29 +31,24 @@ class JMP(NONE):
         self.address = int.from_bytes(proc.memory.read(rip + 1, 8), LE)
 
     def fetch(self, proc: Processor, F: Register, D: Register):
-        D[ifunc], D[valC] = self.op, self.address
-
-        if self.op == JumpType.jmp:
-            proc.rip = self.address
-        else:
-            proc.rip = F[rip] + 9
+        D[ifunc], D[valC] = self.op, F[rip] + 9
+        proc.rip = self.address
 
     def decode(self, proc: Processor, D: Register, E: Register):
         E[ifunc], E[valC] = D[ifunc], D[valC]
 
     def execute(self, proc: Processor, E: Register, M: Register):
-        if E[ifunc] == JumpType.jmp:
-            return
-
-        CF, ZF, SF, OF = proc.cc[carry], proc.cc[zero], proc.cc[sign], proc.cc[overflow]
+        CF, ZF, SF, OF = map(bool,
+            (proc.cc[carry], proc.cc[zero], proc.cc[sign], proc.cc[overflow]))
         ok = {
-            # JumpType.jmp: True,
+            JumpType.jmp: True,
             JumpType.jle: (SF ^ OF) | ZF,
             JumpType.jl: SF ^ OF,
             JumpType.je: ZF,
-            JumpType.jne: ~ZF,
-            JumpType.jge: ~(SF ^ OF),
-            JumpType.jg: ~(SF ^ OF) & ~ZF
+            JumpType.jne: not ZF,
+            JumpType.jge: not (SF ^ OF),
+            JumpType.jg: (not (SF ^ OF)) & (not ZF)
         }[E[ifunc]]
-        if ok:
+        log.debug(f'condition = {ok}')
+        if not ok:
             raise BranchMisprediction(E[valC])

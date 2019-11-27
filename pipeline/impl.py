@@ -75,7 +75,7 @@ def _fetch(proc: Processor):
 
     try:
         instruction = lookup(address, bytecode)
-        assert type(instruction) != NONE, f'no way to parse instruction at {hex(address)}'
+        assert type(instruction) != NONE, f'unable to parse instruction at {hex(address)}'
         instruction.setup(proc, address)
         log.info(f'New instruction fetched at {hex(address)}: "{instruction}" [{hex(bytecode)}]')
         return instruction
