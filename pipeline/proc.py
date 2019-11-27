@@ -59,17 +59,17 @@ class Processor:
         self.D = Register([
             'state', 'ifunc',
             'rA', 'rB',
-            'valC'
+            'valC', 'valP'
         ], report_unprotected_write=False)
         self.E = Register([
             'state', 'ifunc',
             'rA', 'rB',
-            'valA', 'valB', 'valC'
+            'valA', 'valB', 'valC', 'valP'
         ], report_unprotected_write=False)
         self.M = Register([
             'state',
             'rA', 'rB',
-            'valA', 'valE'
+            'valA', 'valE', 'valP'
         ], report_unprotected_write=False)
         self.W = Register([
             'state',

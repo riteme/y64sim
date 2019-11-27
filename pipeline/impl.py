@@ -106,24 +106,40 @@ def run(proc: Processor):
 
         try:
             execute(proc, instruction, stage)
+
         except InvalidMemoryAccess as e:
             log.debug(f'pipeline: Invalid memory access: {e}')
             cur.load('state', ProcessorState.MEMORY_ERROR)
+
         except LockedMemory as e:
             log.debug(f'pipeline: instruction "{instruction}" stalled due to access to locked memory at {hex(e.address)}[{e.size}].')
             cur.load('state', ProcessorState.STALLED)
+
         except InvalidRegisterAccess as e:
             log.debug(f'pipeline: Invalid register access: {e}')
             raise e  # TODO
+
         except LockedRegister as e:
             log.debug(f'pipeline: instruction "{instruction}" stalled due to access to locked register "{e.name}".')
             cur.load('state', ProcessorState.STALLED)
+
         except Halt:
             log.debug(f'pipeline: instruction halt executed.')
             assert stage == Stages.DECODE
             cur.load('state', ProcessorState.HALT)
+
+        except BranchMisprediction as e:
+            log.debug(f'branch misprediction issued by "{instruction}": {hex(e.new_address)}')
+            proc.rip = e.new_address
+            for prev_stage in Stages:
+                if prev_stage == stage:
+                    break
+                log.debug(f'instruction in {prev_stage.name} is cancelled due to branch misprediction.')
+                proc.stage_register[prev_stage].load('state', ProcessorState.NORMAL)
+                proc.stage[prev_stage] = NONE()
+
         except Exception as e:
-            log.error(f'pipeline: an internal error occurred in stage "{stage.name}". Message: {e}')
+            log.error(f'pipeline: an internal error occurred in "{stage.name}". Message: {e}')
             raise e
 
         nxt['state'] = cur['state']

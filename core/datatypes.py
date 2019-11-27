@@ -77,3 +77,10 @@ class InvalidInstruction(Exception):
 
     def __str__(self):
         return f'invalid instruction at {hex(self.address)} with bytecode "{self.bytecode}"'
+
+class BranchMisprediction(Exception):
+    def __init__(self, new_address):
+        self.new_address = new_address
+
+    def __str__(self):
+        return f'branch misprediction: correct PC is {hex(self.new_address)}'

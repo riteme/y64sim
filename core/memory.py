@@ -5,6 +5,9 @@ from .datatypes import InvalidMemoryAccess, LockedMemory, InvalidMemoryLock
 MAX_VIRTUAL_ADDRESS = 65536
 UNINITIALIZED_BYTE = 0
 
+def show_byte(byte):
+    return format(byte, '02x') if byte is not None else 'xx'
+
 class Memory:
     def __init__(self, size=MAX_VIRTUAL_ADDRESS):
         self.size = size
@@ -77,11 +80,11 @@ class Memory:
                 content.append(UNINITIALIZED_BYTE)
             else:
                 content.append(self._mem[address])
-        log.debug(f'memory fetch at {hex(start_address)}: {" ".join(map(lambda x: format(x, "02x"), content))}')
+        log.debug(f'memory fetch at {hex(start_address)}: {" ".join(map(show_byte, content))}')
         return bytes(content)
 
     def _write(self, start_address, content: bytes, lock_check=True):
-        log.debug(f'memory write at {hex(start_address)}: {" ".join(map(lambda x: format(x, "02x"), content))}')
+        log.debug(f'memory write at {hex(start_address)}: {" ".join(map(show_byte, content))}')
         for address, byte in enumerate(content, start=start_address):
             self.check_valid(address)  # writes are not rejected by locks
             if lock_check and not self.is_locked(address):

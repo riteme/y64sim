@@ -6,7 +6,8 @@ from .datatypes import (
     LockedRegister,
     InvalidRegisterLock,
     Halt,
-    InvalidInstruction
+    InvalidInstruction,
+    BranchMisprediction
 )
 
 from .buffer import (
