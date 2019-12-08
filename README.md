@@ -1,6 +1,19 @@
-## 依赖项
+## Prerequisites
+
+Simulator:
+
 * Python 3 (3.6.8)
 * colorama (0.4.1)
+
+Backend:
+* Flask (1.1.1)
+* flask-cors (3.0.8)
+
+Frontend:
+* npm (6.11.3)
+* React (16)
+* Material-UI (core/icons)
+* typeface-roboto
 
 ## 运行
 在 Ubuntu 18.04 终端中，准备运行环境：
@@ -54,7 +67,7 @@ source .venv/bin/activate
 Install prerequisites:
 
 ```shell
-pip install colorama==0.4.1
+pip install colorama==0.4.1 Flask==1.1.1
 ```
 
 Launch simulator:
@@ -72,7 +85,7 @@ python3 main.py test/prog1.yo -v
 Redirect output to file:
 
 ```shell
-python3 main.py test.prog1.yo -v > output.log
+python3 main.py test/prog1.yo -v > output.log
 ```
 
 Exit virtual environment:
@@ -82,5 +95,5 @@ deactivate
 ```
 
 ## TODO
-* [ ] Instruction implementations
-* [ ] Data forwarding
+* [x] Instruction implementations
+* [x] Data forwarding
