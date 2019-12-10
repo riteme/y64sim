@@ -1,13 +1,13 @@
 import React from 'react'
 
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 import {
   Tabs,
   Tab
 } from '@material-ui/core'
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     height: '100%'
@@ -19,10 +19,9 @@ const styles = theme => ({
     minWidth: 48
   },
   page: {
-    width: '100%',
-    padding: theme.spacing(1)
+    width: '100%'
   }
-})
+}))
 
 function TabPanel(props) {
   return props.value === props.index && <div className={props.className}>{props.children}</div>;
@@ -30,50 +29,45 @@ function TabPanel(props) {
 
 // icons
 // pages
-class Pager extends React.Component {
-  constructor(props) {
-    super(props);
+function Pager(props) {
+  const [state, setState] = React.useState({
+    index: 0
+  })
 
-    this.state = {
-      index: 0
-    }
-  }
-
-  handleChange = (event, value) => {
-    this.setState({
+  const handleChange = (event, value) => {
+    setState({
       index: value
     })
   }
 
-  render() {
-    const { classes } = this.props;
+  const classes = useStyles();
 
-    return (
-      <div className={classes.root}>
-        <Tabs
-          orientation="vertical"
-          value={this.state.index}
-          onChange={this.handleChange}
-          className={classes.tabs}
-        >
-          {this.props.icons.map(
-            icon => <Tab icon={icon} className={classes.tabIcon} />
-          )}
-        </Tabs>
-        {this.props.pages.map(
-          (page, index) => (
-            <TabPanel
-              value={this.state.index}
-              index={index}
-              className={classes.page}
-            >
-              {page}
-            </TabPanel>
-          )
+  return (
+    <div className={classes.root}>
+      <Tabs
+        orientation="vertical"
+        value={state.index}
+        onChange={handleChange}
+        className={classes.tabs}
+      >
+        {props.icons.map(
+          (icon, index) => <Tab icon={icon} key={index} className={classes.tabIcon} />
         )}
-      </div>
-    )
-  }
+      </Tabs>
+      {props.pages.map(
+        (page, index) => (
+          <TabPanel
+            value={state.index}
+            index={index}
+            key={index}
+            className={classes.page}
+          >
+            {page}
+          </TabPanel>
+        )
+      )}
+    </div>
+  )
 }
 
-export default withStyles(styles)(Pager);
+export default Pager;

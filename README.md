@@ -14,6 +14,8 @@ Frontend:
 * React (16)
 * Material-UI (core/icons)
 * typeface-roboto
+* react-monaco-editor
+* monaco-editor
 
 ## 运行
 在 Ubuntu 18.04 终端中，准备运行环境：
@@ -93,6 +95,15 @@ Exit virtual environment:
 ```shell
 deactivate
 ```
+
+## Backend
+In virtual environment, run:
+
+```shell
+./backend/server.py
+```
+
+to start backend server in development mode.
 
 ## TODO
 * [x] Instruction implementations

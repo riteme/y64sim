@@ -3,8 +3,7 @@ import { withStyles } from '@material-ui/core/styles'
 
 import {
   CssBaseline,
-  Grid,
-  Tabs
+  Grid
 } from '@material-ui/core'
 
 import CodeIcon from '@material-ui/icons/Code';
@@ -13,6 +12,7 @@ import VisibilityIcon from '@material-ui/icons/Visibility';
 import ApplicationBar from './ApplicationBar'
 import Presentation from './Presentation'
 import Pager from './Pager'
+import CodeEditor from './CodeEditor'
 
 const defaultBackend = 'http://localhost:5000/';
 
@@ -29,7 +29,10 @@ const styles = theme => ({
   page: {
     backgroundColor: theme.palette.common.white
   },
-  applicationBarSpacer: theme.mixins.toolbar
+  applicationBarSpacer: theme.mixins.toolbar,
+  codeEditor: {
+    borderRight: `1px solid ${theme.palette.divider}`
+  }
 })
 
 class App extends React.Component {
@@ -38,9 +41,13 @@ class App extends React.Component {
 
     this.state = {
       connected: false,
-      backendUrl: defaultBackend
+      backendUrl: defaultBackend,
+      code: '',
+      language: 'yo'
     }
+  }
 
+  componentDidMount() {
     this.checkConnection(this.state.backendUrl);
   }
 
@@ -71,6 +78,18 @@ class App extends React.Component {
     })
   }
 
+  handleCodeChange = value => {
+    this.setState({
+      code: value
+    })
+  }
+
+  handleLanguageChange = value => {
+    this.setState({
+      language: value
+    })
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -93,14 +112,19 @@ class App extends React.Component {
                     <VisibilityIcon />
                   ]}
                   pages={[
-                    <div>233</div>,
-                    <div>244</div>
+                    <CodeEditor
+                      code={this.state.code}
+                      language={this.state.language}
+                      onCodeChange={this.handleCodeChange}
+                      onLanguageChange={this.handleLanguageChange}
+                      classes={{root: classes.codeEditor}}
+                    />,
+                    <Presentation />
                   ]}
                 />
               </Grid>
               <Grid item xs={6} className={classes.page}>
-                <Presentation
-                />
+                <Presentation />
               </Grid>
             </Grid>
           </main>

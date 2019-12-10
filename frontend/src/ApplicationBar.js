@@ -1,5 +1,5 @@
 import React from 'react'
-import { fade, withStyles } from '@material-ui/core/styles'
+import { fade, makeStyles } from '@material-ui/core/styles'
 
 import {
   AppBar,
@@ -11,7 +11,7 @@ import {
 import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
 import PortableWifiOffIcon from '@material-ui/icons/PortableWifiOff';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   title: {
     flexGrow: 1
   },
@@ -43,61 +43,56 @@ const styles = theme => ({
       width: 300
     }
   }
-})
+}))
 
 // connected: connection icon
 // onUrlChange: user typing
 // defaultValue
-class ApplicationBar extends React.Component {
-  constructor(props) {
-    super(props);
+function ApplicationBar(props) {
+  const [state, setState] = React.useState({
+    value: props.defaultValue,
+    typingTimeoutHandle: 0
+  })
 
-    this.state = {
-      value: props.defaultValue,
-      typingTimeoutHandle: 0
-    }
-  }
-
-  handleChange = event => {
-    if (this.state.typingTimeoutHandle) {
-      clearTimeout(this.state.typingTimeoutHandle);
+  const handleChange = event => {
+    if (state.typingTimeoutHandle) {
+      clearTimeout(state.typingTimeoutHandle);
     }
 
-    this.setState({
-      value: event.target.value,
+    const url = event.target.value;
+    setState({
+      value: url,
       typingTimeoutHandle: setTimeout(() => {
-        this.props.onUrlChange(this.state.value);
+        props.onUrlChange(url);
       }, 1000)
     });
   }
 
-  render() {
-    const { classes } = this.props;
+  const classes = useStyles();
 
-    return (
-      <AppBar position="fixed" elevation={0}>
-        <Toolbar>
-          <div className={classes.title}>
-            <Typography variant="h6" noWrap>y64 Playground</Typography>
+  return (
+    <AppBar position="fixed" elevation={0}>
+      <Toolbar>
+        <div className={classes.title}>
+          <Typography variant="h6" noWrap>y64 Playground</Typography>
+        </div>
+        <div className={classes.url}>
+          <div className={classes.status}>
+            {props.connected ?
+            <WifiTetheringIcon /> :
+            <PortableWifiOffIcon color="error" />
+            }
           </div>
-          <div className={classes.url}>
-            <div className={classes.status}>
-              {this.props.connected ?
-              <WifiTetheringIcon /> :
-              <PortableWifiOffIcon color="error" />
-              }
-            </div>
-            <InputBase
-              classes={{input: classes.urlInput}}
-              placeholder="Backend URL"
-              defaultValue={this.props.defaultValue}
-              onChange={this.handleChange}
-            />
-          </div>
-        </Toolbar>
-      </AppBar>
-    );
-  }
+          <InputBase
+            classes={{input: classes.urlInput}}
+            placeholder="Backend URL"
+            defaultValue={props.defaultValue}
+            onChange={handleChange}
+          />
+        </div>
+      </Toolbar>
+    </AppBar>
+  );
 }
 
-export default withStyles(styles)(ApplicationBar);
+export default ApplicationBar;
