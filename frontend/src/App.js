@@ -6,13 +6,19 @@ import {
   Grid
 } from '@material-ui/core'
 
-import CodeIcon from '@material-ui/icons/Code';
-import VisibilityIcon from '@material-ui/icons/Visibility';
+import CodeIcon from '@material-ui/icons/Code'
+import VisibilityIcon from '@material-ui/icons/Visibility'
+import HelpIcon from '@material-ui/icons/Help'
+import CheckCircleIcon from '@material-ui/icons/CheckCircle'
+import CancelIcon from '@material-ui/icons/Cancel'
+import BugReportIcon from '@material-ui/icons/BugReport'
+import SettingsIcon from '@material-ui/icons/Settings'
 
 import ApplicationBar from './ApplicationBar'
 import Presentation from './Presentation'
 import Pager from './Pager'
 import CodeEditor from './CodeEditor'
+import PlaceholderPanel from './PlaceholderPanel'
 
 const defaultBackend = 'http://localhost:5000/';
 
@@ -39,11 +45,23 @@ class App extends React.Component {
   constructor(props) {
     super(props);
 
+    this.UNKNOWN = <HelpIcon color="disabled" />;
+    this.UPDATED = <CheckCircleIcon color="primary" />;
+    this.FAILED = <CancelIcon color="error" />;
+
     this.state = {
       connected: false,
       backendUrl: defaultBackend,
+
       code: '',
-      language: 'yo'
+      language: 'yo',
+      bytes: [],
+      diagnostics: [],
+
+      codeEditorDisableCompile: false,
+      codeEditorStatus: this.UNKNOWN,
+      codeEditorViewState: null,
+      codeEditorQuerying: false
     }
   }
 
@@ -55,7 +73,7 @@ class App extends React.Component {
     fetch(url)  // ping!
     .then(response => response.json())
     .then(result => {
-      console.log(result);
+      // console.log(result);
 
       if (result.status !== 'ok' || result.info !== 'pong')
         throw result;
@@ -80,13 +98,91 @@ class App extends React.Component {
 
   handleCodeChange = value => {
     this.setState({
-      code: value
+      code: value,
+      codeEditorStatus: this.UNKNOWN
     })
   }
 
   handleLanguageChange = value => {
     this.setState({
       language: value
+    })
+  }
+
+  handleSaveViewState = state => {
+    this.setState({
+      codeEditorViewState: state
+    })
+  }
+
+  handleCompile = () => {
+    this.setState({
+      codeEditorDisableCompile: true,
+      codeEditorQuerying: true
+    })
+
+    fetch(new URL('parse', this.state.backendUrl), {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json;charset=utf-8'
+      },
+      body: JSON.stringify({
+        type: this.state.language,
+        content: this.state.code
+      })
+    })
+    .then(r => {
+      this.setState({
+        codeEditorQuerying: false
+      })
+
+      if (!r.ok) throw r;
+      return r.json();
+    })
+    .then(result => {
+      console.debug(result);
+
+      if (result.status === 'ok') {
+        this.setState({
+          bytes: result.bytes,
+          diagnostics: result.diagnostics,
+          codeEditorStatus: this.UPDATED
+        })
+      } else if ('diagnostics' in result) {
+        this.setState({
+          diagnostics: result.diagnostics,
+          codeEditorStatus: this.FAILED
+        })
+      } else {
+        this.setState({
+          diagnostics: [{
+            type: 'error',
+            lineos: 0,
+            code: '',
+            message: `<backend>: backend failed: ${result.reason}`
+          }],
+          codeEditorStatus: this.FAILED
+        })
+      }
+    })
+    .catch(r => {
+      console.debug(r);
+
+      this.setState({
+        codeEditorStatus: this.FAILED,
+        diagnostics: [{
+          'type': 'error',
+          'lineos': 0,
+          'code': '',
+          'message': `<network>: failed to access parser: ${r.statusText} (HTTP ${r.status})`
+        }]
+      })
+    })
+    .finally(() => {
+      this.setState({
+        codeEditorDisableCompile: false,
+        codeEditorQuerying: false
+      })
     })
   }
 
@@ -109,22 +205,36 @@ class App extends React.Component {
                 <Pager
                   icons={[
                     <CodeIcon />,
-                    <VisibilityIcon />
+                    <VisibilityIcon />,
+                    <BugReportIcon />,
+                    <SettingsIcon />
                   ]}
                   pages={[
                     <CodeEditor
                       code={this.state.code}
+
                       language={this.state.language}
+                      disableCompile={this.state.codeEditorDisableCompile}
+                      status={this.state.codeEditorStatus}
+                      diagnostics={this.state.diagnostics}
+                      viewState={this.state.codeEditorViewState}
+                      querying={this.state.codeEditorQuerying}
+
                       onCodeChange={this.handleCodeChange}
                       onLanguageChange={this.handleLanguageChange}
-                      classes={{root: classes.codeEditor}}
+                      onSaveViewState={this.handleSaveViewState}
+                      onCompile={this.handleCompile}
+
+                      _classes={{root: classes.codeEditor}}
                     />,
-                    <Presentation />
+                    <PlaceholderPanel />,
+                    <PlaceholderPanel />,
+                    <PlaceholderPanel />
                   ]}
                 />
               </Grid>
               <Grid item xs={6} className={classes.page}>
-                <Presentation />
+                <PlaceholderPanel />
               </Grid>
             </Grid>
           </main>

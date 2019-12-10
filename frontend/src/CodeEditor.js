@@ -1,14 +1,17 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
-import MonacoEditor from 'react-monaco-editor'
+import { withStyles } from '@material-ui/core/styles'
+import { ResponsiveMonacoEditor } from "responsive-react-monaco-editor"
 
 import {
   Button,
   Select,
-  MenuItem
+  MenuItem,
+  LinearProgress
 } from '@material-ui/core'
 
-const useStyles = makeStyles(theme => ({
+import DiagnosticPanel from './DiagnosticPanel'
+
+const styles = theme => ({
   rootDiv: {
     display: 'flex',
     flexDirection: 'column',
@@ -17,10 +20,11 @@ const useStyles = makeStyles(theme => ({
   },
   editorDiv: {
     flexGrow: 1,
-    borderBottom: `1px solid ${theme.palette.divider}`
+    overflow: 'hidden',
   },
   controlDiv: {
-    display: 'flex'
+    display: 'flex',
+    borderTop: `1px solid ${theme.palette.divider}`
   },
   controlLeft: {
     display: 'flex',
@@ -36,49 +40,152 @@ const useStyles = makeStyles(theme => ({
   },
   controlRight: {
     padding: theme.spacing(0.5),
+    display: 'flex',
+    flexDirection: 'row'
   },
   compileButton: {
+    transition: theme.transitions.create('color'),
     borderRadius: 0
+  },
+  statusIcon: {
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    padding: [[0, theme.spacing(0.5), 0, theme.spacing(1)]]
+  },
+  diagnostics: {
+    borderTop: `1px solid ${theme.palette.divider}`,
+    overflow: 'auto',
+    maxHeight: 250
+  },
+  diagnosticsHeader: {
+    backgroundColor: theme.palette.background.paper,
+    borderBottom: `1px solid ${theme.palette.divider}`
   }
-}))
+})
 
-function CodeEditor({
-  code, onCodeChange,
-  language, onLanguageChange,
-  classes
-}) {
-  const _classes = useStyles();
-
-  const handleChange = event => {
-    onLanguageChange(event.target.value);
+class CodeEditor extends React.Component {
+  constructor(props) {
+    super(props);
+    this.editor = null;
   }
 
-  return (
-    <div className={[classes.root, _classes.rootDiv].join(" ")}>
-      <div className={_classes.editorDiv}>
-        <MonacoEditor
-          value={code}
-          onChange={onCodeChange}
-        />
-      </div>
-      <div className={_classes.controlDiv}>
-        <div className={_classes.controlLeft}>
-          <div className={_classes.languageSelectDiv}>
-            <Select value={language} onChange={handleChange} classes={{root: _classes.languageSelect}}>
-              <MenuItem value="yo">.yo</MenuItem>
-              <MenuItem value="ys">.ys</MenuItem>
-            </Select>
+  handleLanguageChange = event => {
+    if (this.props.onLanguageChange)
+      this.props.onLanguageChange(event.target.value);
+  }
+
+  editorDidMount = (editor, monaco) => {
+    if (this.props.viewState)
+      editor.restoreViewState(this.props.viewState);
+    editor.focus();
+    this.editor = editor;
+    this.monaco = monaco;
+  }
+
+  handleClickDiagnostic = diagnostic => {
+    console.debug(`navigate to ${diagnostic.lineos}`);
+    this.editor.revealLine(diagnostic.lineos);
+    this.editor.setPosition({
+      lineNumber: diagnostic.lineos,
+      column: 1
+    });
+    this.editor.focus();
+  }
+
+  highlightDiagnostics() {
+    if (this.editor && this.props.diagnostics.length > 0) {
+      const model = this.editor.getModel();
+      this.monaco.editor.setModelMarkers(model, 'y64sim', this.props.diagnostics.map(
+        ({ lineos, type, message, code }) => ({
+          code: code,
+          message: message,
+          startColumn: 1,
+          endColumn: code.length + 1,
+          startLineNumber: lineos,
+          endLineNumber: lineos,
+          severity: type === 'error' ?
+            this.monaco.MarkerSeverity.Error :
+            this.monaco.MarkerSeverity.Warning
+        })
+      ))
+    }
+  }
+
+  componentDidUpdate() {
+    this.highlightDiagnostics();
+  }
+
+  componentDidMount() {
+    this.highlightDiagnostics();
+  }
+
+  componentWillUnmount() {
+    if (this.props.onSaveViewState)
+      this.props.onSaveViewState(this.editor.saveViewState());
+  }
+
+  render() {
+    const {
+      code, language,
+      classes, _classes
+    } = this.props;
+    const monacoOptions = {
+      minimap: {
+        enabled: false
+      },
+      selectOnLineNumbers: true
+    }
+
+    return (
+      <div className={[_classes.root, classes.rootDiv].join(" ")}>
+        <div className={classes.editorDiv} >
+          <ResponsiveMonacoEditor
+            value={code}
+            onChange={this.props.onCodeChange}
+            options={monacoOptions}
+            editorDidMount={this.editorDidMount}
+          />
+        </div>
+        {this.props.querying && <LinearProgress variant="query" color="secondary" />}
+        {
+          this.props.diagnostics.length > 0 &&
+          (<div className={classes.diagnostics}>
+            <DiagnosticPanel
+              diagnostics={this.props.diagnostics}
+              onClickDiagnostic={this.handleClickDiagnostic}
+              classes={{header: classes.diagnosticsHeader}}
+            />
+          </div>)
+        }
+        <div className={classes.controlDiv}>
+          <div className={classes.controlLeft}>
+            <div className={classes.languageSelectDiv}>
+              <Select
+                value={language}
+                onChange={this.handleLanguageChange}
+                classes={{root: classes.languageSelect}}
+              >
+                <MenuItem value="yo">.yo</MenuItem>
+                <MenuItem value="ys">.ys</MenuItem>
+              </Select>
+            </div>
+          </div>
+          <div className={classes.controlRight}>
+            <Button
+              color="primary"
+              onClick={this.props.onCompile}
+              classes={{root: classes.compileButton}}
+              disabled={this.props.disableCompile}
+            >COMPILE & LOAD</Button>
+            <div className={classes.statusIcon}>
+              {this.props.status}
+            </div>
           </div>
         </div>
-        <div className={_classes.controlRight}>
-          <Button
-            color="primary"
-            classes={{root: _classes.compileButton}}
-          >COMPILE</Button>
-        </div>
       </div>
-    </div>
-  )
+    )
+  }
 }
 
-export default CodeEditor;
+export default withStyles(styles)(CodeEditor);

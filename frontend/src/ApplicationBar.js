@@ -8,8 +8,8 @@ import {
   InputBase
 } from '@material-ui/core'
 
-import WifiTetheringIcon from '@material-ui/icons/WifiTethering';
-import PortableWifiOffIcon from '@material-ui/icons/PortableWifiOff';
+import WifiTetheringIcon from '@material-ui/icons/WifiTethering'
+import PortableWifiOffIcon from '@material-ui/icons/PortableWifiOff'
 
 const useStyles = makeStyles(theme => ({
   title: {
