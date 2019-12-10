@@ -6,7 +6,8 @@ import {
   Button,
   Select,
   MenuItem,
-  LinearProgress
+  LinearProgress,
+  Fade
 } from '@material-ui/core'
 
 import DiagnosticPanel from './DiagnosticPanel'
@@ -94,7 +95,7 @@ class CodeEditor extends React.Component {
   }
 
   highlightDiagnostics() {
-    if (this.editor && this.props.diagnostics.length > 0) {
+    if (this.editor) {
       const model = this.editor.getModel();
       this.monaco.editor.setModelMarkers(model, 'y64sim', this.props.diagnostics.map(
         ({ lineos, type, message, code }) => ({
@@ -128,7 +129,7 @@ class CodeEditor extends React.Component {
   render() {
     const {
       code, language,
-      classes, _classes
+      classes
     } = this.props;
     const monacoOptions = {
       minimap: {
@@ -138,7 +139,7 @@ class CodeEditor extends React.Component {
     }
 
     return (
-      <div className={[_classes.root, classes.rootDiv].join(" ")}>
+      <div className={classes.rootDiv}>
         <div className={classes.editorDiv} >
           <ResponsiveMonacoEditor
             value={code}
@@ -147,16 +148,21 @@ class CodeEditor extends React.Component {
             editorDidMount={this.editorDidMount}
           />
         </div>
-        {this.props.querying && <LinearProgress variant="query" color="secondary" />}
+        {this.props.querying &&
+        <Fade in>
+          <LinearProgress variant="query" color="secondary" />
+        </Fade>}
         {
           this.props.diagnostics.length > 0 &&
-          (<div className={classes.diagnostics}>
-            <DiagnosticPanel
-              diagnostics={this.props.diagnostics}
-              onClickDiagnostic={this.handleClickDiagnostic}
-              classes={{header: classes.diagnosticsHeader}}
-            />
-          </div>)
+          (<Fade in>
+            <div className={classes.diagnostics}>
+              <DiagnosticPanel
+                diagnostics={this.props.diagnostics}
+                onClickDiagnostic={this.handleClickDiagnostic}
+                classes={{header: classes.diagnosticsHeader}}
+              />
+            </div>
+          </Fade>)
         }
         <div className={classes.controlDiv}>
           <div className={classes.controlLeft}>

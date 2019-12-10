@@ -86,6 +86,7 @@ function ApplicationBar(props) {
           <InputBase
             classes={{input: classes.urlInput}}
             placeholder="Backend URL"
+            error
             defaultValue={props.defaultValue}
             onChange={handleChange}
           />

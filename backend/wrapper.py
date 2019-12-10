@@ -110,6 +110,7 @@ def parse_yo(content):
         {
             'type': x.type.name.lower(),
             'lineos': x.lineos,
+            'code': x.code,
             'message': x.message
         }
         for x in parser.diagnostics

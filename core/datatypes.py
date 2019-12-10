@@ -1,4 +1,14 @@
+from enum import Enum, unique
+from collections import namedtuple
+
 NOT_AVAILABLE = '(not available)'
+
+@unique
+class DiagnosticType(Enum):
+    ERROR = 1
+    WARN = 2
+
+Diagnostic = namedtuple('Diagnostic', ['type', 'lineos', 'code', 'message'])
 
 class InvalidMemoryAccess(Exception):
     def __init__(self, address, size=1, info=NOT_AVAILABLE):

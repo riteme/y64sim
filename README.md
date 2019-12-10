@@ -16,6 +16,7 @@ Frontend:
 * typeface-roboto
 * react-monaco-editor
 * monaco-editor
+* react-resize-detector
 
 ## 运行
 在 Ubuntu 18.04 终端中，准备运行环境：

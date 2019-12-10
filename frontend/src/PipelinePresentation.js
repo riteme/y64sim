@@ -14,7 +14,7 @@ const useStyles = makeStyles({
   }
 })
 
-function Presentation(props) {
+function PipelinePresentation(props) {
   const classes = useStyles();
 
   return (
@@ -24,4 +24,4 @@ function Presentation(props) {
   )
 }
 
-export default Presentation;
+export default PipelinePresentation;

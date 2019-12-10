@@ -1,15 +1,6 @@
-from enum import Enum, unique
-from collections import namedtuple
-
 from . import log
 from .memory import MAX_VIRTUAL_ADDRESS
-
-@unique
-class DiagnosticType(Enum):
-    ERROR = 1
-    WARN = 2
-
-Diagnostic = namedtuple('Diagnostic', ['type', 'lineos', 'message'])
+from .datatypes import Diagnostic, DiagnosticType
 
 class Parser:
     def __init__(self, source=None):
@@ -34,27 +25,43 @@ class Parser:
             if ":" not in line:
                 if len(line.strip()) != 0:
                     self.diagnostics.append(
-                        Diagnostic(DiagnosticType.ERROR, lineos, 'no colon separator in non-blank line.')
+                        Diagnostic(DiagnosticType.ERROR, lineos, line,
+                            'no colon separator in non-blank line.')
                     )
                 continue
 
-            address, sequence = map(str.strip, line.split(':'))
+            address, sequence = map(str.strip, line.split(':', maxsplit=1))
             try:
                 address = int(address, base=16)
-            except:
-                self.diagnostics.append(DiagnosticType.ERROR, lineos, 'failed to parse address.')
+            except ValueError:
+                self.diagnostics.append(
+                    Diagnostic(DiagnosticType.ERROR, lineos, line,
+                        'failed to parse address.')
+                )
+                continue
+
+            try:
+                if len(sequence) > 0:
+                    int(sequence, base=16)
+            except ValueError:
+                self.diagnostics.append(
+                    Diagnostic(DiagnosticType.ERROR, lineos, line,
+                        'invalid byte sequence.')
+                )
                 continue
 
             if len(sequence) % 2 != 0:
                 self.diagnostics.append(
-                    Diagnostic(DiagnosticType.ERROR, lineos, 'incorrect byte sequence length.')
+                    Diagnostic(DiagnosticType.ERROR, lineos, line,
+                        'incorrect byte sequence length.')
                 )
                 continue
 
             self.max_address = max(self.max_address, address + max(0, len(sequence) // 2 - 1))
             if self.max_address > MAX_VIRTUAL_ADDRESS:
                 self.diagnostics.append(
-                    Diagnostic(DiagnosticType.ERROR, lineos, f'address too large, which exceeds {MAX_VIRTUAL_ADDRESS}.')
+                    Diagnostic(DiagnosticType.ERROR, lineos, line,
+                        f'address too large, which exceeds {MAX_VIRTUAL_ADDRESS}.')
                 )
                 return
 
@@ -64,7 +71,8 @@ class Parser:
             for i in range(0, len(sequence) // 2):
                 if self.bytes[address + i] is not None:
                     self.diagnostics.append(
-                        Diagnostic(DiagnosticType.WARN, lineos, f'overlapped bytes at {hex(address + i)}.')
+                        Diagnostic(DiagnosticType.WARN, lineos, line,
+                            f'overlapped bytes at {hex(address + i)}.')
                     )
 
                 self.bytes[address + i] = int(sequence[2 * i] + sequence[2 * i + 1], base=16)

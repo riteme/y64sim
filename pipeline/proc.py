@@ -98,7 +98,7 @@ class Processor:
         # ])
 
         # Main memory
-        if memory_size:
+        if memory_size is not None:
             assert isinstance(memory_size, int), '"memory_size" must be integers.'
             self.memory = Memory(size=memory_size)
         else:
