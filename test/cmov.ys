@@ -1,0 +1,7 @@
+xorq %rax, %rax
+irmovq $1, %rdx
+irmovq $2, %rcx
+irmovq $3, %r8
+cmove %rdx, %rcx
+cmovne %rcx, %r8
+halt
