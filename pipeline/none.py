@@ -1,3 +1,5 @@
+INVALID_ADDRESS = -1
+
 class MismatchedSignature(Exception):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -9,7 +11,7 @@ class NONE:
     """real NOP"""
 
     def __init__(self):
-        pass
+        self.location = INVALID_ADDRESS
 
     def __str__(self):
         return '(no instruction)'
@@ -19,7 +21,7 @@ class NONE:
         Store them in `self`.
         pre-FETCH stage
         """
-        pass
+        self.location = rip
 
     def fetch(self, proc, F, D):
         """Real FETCH stage"""

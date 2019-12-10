@@ -19,6 +19,7 @@ class CmovType(IntEnum):
 
 class CMOV(NONE):
     def __init__(self, byte):
+        super().__init__()
         if not 0x21 <= byte <= 0x26:
             raise MismatchedSignature
 
@@ -26,6 +27,7 @@ class CMOV(NONE):
         return f'{CmovType(self.op).name} %{self.src}, %{self.dst}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         _, self.op = split_byte(proc.memory.read(rip)[0])
         self.src, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
 

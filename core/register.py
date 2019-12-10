@@ -1,4 +1,4 @@
-from core import log
+from . import log
 from .buffer import Buffer, BufferMode
 from .datatypes import InvalidRegisterAccess, LockedRegister, InvalidRegisterLock
 
@@ -117,6 +117,9 @@ class Register:
 
     def __setitem__(self, name, value):
         return self.write(name, value)
+
+    def __contains__(self, name):
+        return name in self._file
 
     def __str__(self):
         # TODO: str() for Register

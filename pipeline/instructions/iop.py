@@ -8,6 +8,7 @@ from pipeline.none import *
 
 class IOP(NONE):
     def __init__(self, byte):
+        super().__init__()
         if not 0xc0 <= byte <= 0xc4:
             raise MismatchedSignature
 
@@ -15,6 +16,7 @@ class IOP(NONE):
         return f'{Arithmetic(self.op).name.lower()} ${self.constant}, %{self.dst}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         _, self.op = split_byte(proc.memory.read(rip)[0])
         _, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
         self.constant = int.from_bytes(proc.memory.read(rip + 2, 8), LE)

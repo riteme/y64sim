@@ -1,4 +1,4 @@
-from core import log
+from . import log
 from enum import Enum, unique
 
 BIT_COUNT = 64

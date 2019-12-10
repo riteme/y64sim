@@ -8,6 +8,7 @@ from pipeline.none import *
 
 class POP(NONE):
     def __init__(self, byte):
+        super().__init__()
         if byte != 0xb0:
             raise MismatchedSignature
 
@@ -15,6 +16,7 @@ class POP(NONE):
         return f'pop %{self.target}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         self.target, _ = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
 
     def fetch(self, proc: Processor, F: Register, D: Register):

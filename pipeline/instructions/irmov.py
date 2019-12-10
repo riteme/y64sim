@@ -8,6 +8,7 @@ from pipeline.none import *
 
 class IRMOV(NONE):
     def __init__(self, byte):
+        super().__init__()
         if byte != 0x30:
             raise MismatchedSignature
 
@@ -15,6 +16,7 @@ class IRMOV(NONE):
         return f'mov ${self.value}, %{self.dst}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         _, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
         self.value = int.from_bytes(proc.memory.read(rip + 2, 8), LE)
 

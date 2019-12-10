@@ -1,8 +1,8 @@
-from core import log
+from . import log
 from .buffer import Buffer, BufferMode
 from .datatypes import InvalidMemoryAccess, LockedMemory, InvalidMemoryLock
 
-MAX_VIRTUAL_ADDRESS = 65536
+MAX_VIRTUAL_ADDRESS = 8191  # 8KB
 UNINITIALIZED_BYTE = 0
 
 def show_byte(byte):

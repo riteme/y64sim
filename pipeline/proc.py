@@ -41,7 +41,7 @@ class ProcessorState(Enum):
     STALLED = 5
 
 class Processor:
-    def __init__(self, program):
+    def __init__(self, program=None, memory_size=None):
         # Register file
         self.file = Register([x.name for x in Registers if x != Registers.na])
 
@@ -92,15 +92,19 @@ class Processor:
             Stages.WRITE: self.W
         }
 
-        # Forwarding register
-        self.forward = Register([
-            'E_valE'
-        ])
+        # # Forwarding register
+        # self.forward = Register([
+        #     'E_valE'
+        # ])
 
-        # TODO: Data forwarding
         # Main memory
-        self.memory = Memory()
-        self.memory.load(0, program)
+        if memory_size:
+            assert isinstance(memory_size, int), '"memory_size" must be integers.'
+            self.memory = Memory(size=memory_size)
+        else:
+            self.memory = Memory()
+        if program:
+            self.memory.load(0, program)
 
         # ALU
         self.alu = ALU()

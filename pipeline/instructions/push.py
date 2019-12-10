@@ -8,6 +8,7 @@ from pipeline.none import *
 
 class PUSH(NONE):
     def __init__(self, byte):
+        super().__init__()
         if byte != 0xa0:
             raise MismatchedSignature
 
@@ -15,6 +16,7 @@ class PUSH(NONE):
         return f'push %{self.target}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         self.target, _ = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
 
     def fetch(self, proc: Processor, F: Register, D: Register):

@@ -9,6 +9,7 @@ from pipeline.none import *
 
 class RMMOV(NONE):
     def __init__(self, byte):
+        super().__init__()
         if byte != 0x40:
             raise MismatchedSignature
 
@@ -16,6 +17,7 @@ class RMMOV(NONE):
         return f'mov %{self.src}, {self.offset}(%{self.dst})'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         self.src, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
         self.offset = int.from_bytes(proc.memory.read(rip + 2, 8), LE)
 

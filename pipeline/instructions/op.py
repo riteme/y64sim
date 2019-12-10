@@ -8,6 +8,7 @@ from pipeline.none import *
 
 class OP(NONE):
     def __init__(self, byte):
+        super.__init__()
         if not 0x60 <= byte <= 0x64:
             raise MismatchedSignature
 
@@ -15,6 +16,7 @@ class OP(NONE):
         return f'{Arithmetic(self.op).name.lower()} %{self.src}, %{self.dst}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         _, self.op = split_byte(proc.memory.read(rip)[0])
         self.src, self.dst = map(retrieve, split_byte(proc.memory.read(rip + 1)[0]))
 

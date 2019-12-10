@@ -8,6 +8,7 @@ from pipeline.none import *
 
 class CALL(NONE):
     def __init__(self, byte):
+        super().__init__()
         if byte != 0x80:
             raise MismatchedSignature
 
@@ -15,6 +16,7 @@ class CALL(NONE):
         return f'call {hex(self.address)}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         self.address = int.from_bytes(proc.memory.read(rip + 1, 8), LE)
 
     def fetch(self, proc: Processor, F: Register, D: Register):

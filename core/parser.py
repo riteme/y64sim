@@ -1,7 +1,7 @@
 from enum import Enum, unique
 from collections import namedtuple
 
-from core import log
+from . import log
 from .memory import MAX_VIRTUAL_ADDRESS
 
 @unique

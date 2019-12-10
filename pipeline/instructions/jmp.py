@@ -20,6 +20,7 @@ class JumpType(IntEnum):
 
 class JMP(NONE):
     def __init__(self, byte):
+        super().__init__()
         if not 0x70 <= byte <= 0x76:
             raise MismatchedSignature
 
@@ -27,6 +28,7 @@ class JMP(NONE):
         return f'{JumpType(self.op).name} {hex(self.address)}'
 
     def setup(self, proc: Processor, rip):
+        super().setup(proc, rip)
         _, self.op = split_byte(proc.memory.read(rip)[0])
         self.address = int.from_bytes(proc.memory.read(rip + 1, 8), LE)
 

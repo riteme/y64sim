@@ -55,7 +55,7 @@ def print_proc(proc: Processor):
     log.debug(f'[E]: {proc.E}')
     log.debug(f'[M]: {proc.M}')
     log.debug(f'[W]: {proc.W}')
-    log.debug(f'[forward]: {proc.forward}')
+    # log.debug(f'[forward]: {proc.forward}')
 
 def _fetch(proc: Processor):
     try:
