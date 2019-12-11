@@ -2,7 +2,7 @@ from enum import Enum, IntEnum, unique
 from core import Register, Memory, ALU
 from .none import NONE
 
-MAX_CYCLE = 1024
+MAX_CYCLE = 5000
 
 @unique
 class Registers(Enum):

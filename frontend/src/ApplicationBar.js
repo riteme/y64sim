@@ -85,10 +85,10 @@ function ApplicationBar(props) {
           </div>
           <InputBase
             classes={{input: classes.urlInput}}
-            placeholder="Backend URL"
-            error
+            placeholder={props.currentBacked}
             defaultValue={props.defaultValue}
             onChange={handleChange}
+            error
           />
         </div>
       </Toolbar>

@@ -17,7 +17,8 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     width: '100%',
-    height: '100%'
+    // height: '100%'
+    flexGrow: 1
   },
   editorDiv: {
     flexGrow: 1,

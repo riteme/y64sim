@@ -20,19 +20,34 @@ from pipeline.proc import (
 )
 
 def dump_registers(reg: Register) -> dict:
+    _hex = lambda x: format(x, 'X')
+
     ret = copy(reg._file)
     for key, value in ret.items():
         if isinstance(value, Enum) or isinstance(value, IntEnum):
-            ret[key] = value.value
+            ret[key] = [value.value, _hex(value.value)]
+        elif type(value) is int:  # JavaScript does not allow 64bit integers!
+            ret[key] = [str(value), _hex(value)]
+        else:
+            ret[key] = [value, None]
 
     return ret
 
 def load_registers(data: dict, dst: Register):
-    for key, value in data.items():
-        # log.debug(f'{key}: {value}')
+    for key, vs in data.items():
+        value, _ = vs
         assert key in dst
-        prototype = type(dst[key])
-        dst.load(key, prototype(value))
+        if isinstance(dst[key], Enum) or isinstance(dst[key], IntEnum):
+            prototype = type(dst[key])
+            value = prototype(value)
+        else:
+            try:
+                value = int(value)  # try to parse all integers
+            except ValueError:
+                pass
+
+        # log.debug(f'{key}: {value}')
+        dst.load(key, value)
 
 def dump_memory(mem: Memory) -> list:
     return [show_byte(x) for x in mem._mem]
@@ -41,6 +56,12 @@ def load_memory(data: str, dst: Memory):
     dst.load(0, bytes(
         int(byte, base=16) for byte in data
     ))
+
+def dump_locks(obj):
+    return obj._lock
+
+def load_locks(data, obj):
+    obj._lock = data
 
 def dump_stage(proc: Processor, stage: Stages) -> dict:
     instruction = proc.stage[stage]
@@ -75,22 +96,35 @@ def dump_frame(proc: Processor) -> dict:
             'execute': dump_stage(proc, Stages.EXECUTE),
             'memory': dump_stage(proc, Stages.MEMORY),
             'write': dump_stage(proc, Stages.WRITE)
+        },
+        'locks': {
+            'file': dump_locks(proc.file),
+            'memory': dump_locks(proc.memory),
+            'cc': dump_locks(proc.cc)
         }
     }
 
 def load_frame(frame: dict) -> Processor:
     proc = Processor(memory_size=len(frame['memory']))
     proc.cycle = frame['cycle']
+
     proc.core.load('state', ProcessorState(frame['state']))
     proc.core.load('rip', frame['rip'])
+
     load_registers(frame['registers'], proc.file)
     load_registers(frame['cc'], proc.cc)
     load_memory(frame['memory'], proc.memory)
+
     load_stage(frame['stages']['fetch'], proc, Stages.FETCH)
     load_stage(frame['stages']['decode'], proc, Stages.DECODE)
     load_stage(frame['stages']['execute'], proc, Stages.EXECUTE)
     load_stage(frame['stages']['memory'], proc, Stages.MEMORY)
     load_stage(frame['stages']['write'], proc, Stages.WRITE)
+
+    load_locks(frame['locks']['file'], proc.file)
+    load_locks(frame['locks']['memory'], proc.memory)
+    load_locks(frame['locks']['cc'], proc.cc)
+
     return proc
 
 def run(frame: dict) -> dict:

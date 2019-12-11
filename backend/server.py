@@ -5,6 +5,7 @@ from flask_cors import CORS
 
 import time
 
+from core import log as core_log
 from .wrapper import *
 
 # HTTP error codes
@@ -110,6 +111,9 @@ def parse():
 #     'write': {
 #       ...
 #     }
+#   },
+#   'locks': {
+#     ...
 #   }
 # }
 
@@ -143,8 +147,22 @@ def simulate():
     if 'frame' not in payload or type(payload['frame']) is not dict:
         return key_error('frame')
 
-    next_frame = run(payload['frame'])
+    messages = []
+    def track(level, message):
+        if level != 'debug':
+            messages.append({
+                'level': level,
+                'message': message
+            })
+
+    core_log.start_listen(track)
+    try:
+        next_frame = run(payload['frame'])
+    finally:
+        core_log.stop_listen()
+
     return {
         'status': 'ok',
-        'frame': next_frame
+        'frame': next_frame,
+        'messages': messages
     }

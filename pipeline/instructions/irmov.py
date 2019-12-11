@@ -30,7 +30,6 @@ class IRMOV(NONE):
 
     def execute(self, proc: Processor, E: Register, M: Register):
         M[valE], M[rB] = E[valC], E[rB]
-        proc.forward[E_valE] = E[valC]
         proc.file.forward(E[rB], E[valC])
 
     def memory(self, proc: Processor, M: Register, W: Register, ):

@@ -68,6 +68,10 @@ def _fetch(proc: Processor):
 
     try:
         bytecode = proc.memory.read(address)[0]
+    except InvalidMemoryAccess as e:
+        log.warn(f'Invalid memory access during FETCH: {e}')
+        proc.F.load('state', ProcessorState.MEMORY_ERROR)
+        return NONE()
     except Exception as e:
         log.warn(f'Failed to fetch instruction bytecode at {hex(address)}. Message: {e}')
         proc.F.load('state', ProcessorState.INVALID_INSTRUCTION)

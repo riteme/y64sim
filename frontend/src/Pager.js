@@ -13,13 +13,17 @@ const useStyles = makeStyles(theme => ({
     height: '100%'
   },
   tabs: {
-    borderRight: `1px solid ${theme.palette.divider}`
+    borderRight: `1px solid ${theme.palette.divider}`,
+    backgroundColor: theme.palette.background.default
   },
   tabIcon: {
     minWidth: 48
   },
   page: {
-    width: '100%'
+    width: '100%',
+    height: '100%',
+    display: 'flex',
+    flexDirection: 'column'
   }
 }))
 
