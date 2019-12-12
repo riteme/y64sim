@@ -1,12 +1,12 @@
 import React from 'react'
-import { makeStyles } from '@material-ui/core/styles'
+import { withStyles } from '@material-ui/core/styles'
 
 import {
-  Typography,
   Tooltip
  } from '@material-ui/core'
+import { yellow } from '@material-ui/core/colors'
 
-const useStyles = makeStyles(theme => ({
+const styles = theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -35,49 +35,56 @@ const useStyles = makeStyles(theme => ({
       backgroundColor: theme.palette.grey[300]
     }
   },
-  byteUpdated: {
-    backgroundColor: 'yellow'
+  highlight: {
+    backgroundColor: yellow[300]
   },
-  rip: {
+  outlined: {
     outline: '2px solid red'
   }
-}))
+})
 
 function Byte({
-  byte, index, rip, old
+  byte, index, outlined, highlight, classes
 }) {
-  const classes = useStyles();
   return (
-    <Tooltip key={index} title={`Location: 0x${index.toString(16)}`}>
+    <Tooltip title={`0x${index.toString(16)}`}>
       <span className={[
         classes.byte,
-        index === rip ? classes.rip : null,
-        old && old !== byte ? classes.byteUpdated : null
+        outlined && classes.outlined,
+        highlight && classes.highlight
       ].join(' ')}>{byte}</span>
     </Tooltip>
   )
 }
 
-function MemoryPanel({
-  memory, rip, old
-}) {
-  const classes = useStyles();
+class MemoryPanel extends React.PureComponent {
+  shouldComponentUpdate(nextProps) {
+    return (
+      this.props.rip !== nextProps.rip ||
+      this.props.memory !== nextProps.memory
+    )
+  }
 
-  return (
-    <div className={classes.root}>
-      <pre className={classes.pre}>
-        {memory && memory.map((byte, index) =>
-          <Byte
-            key={index}
-            byte={byte}
-            old={old === null ? null : old[index]}
-            index={index}
-            rip={rip}
-          />
-        )}
-      </pre>
-    </div>
-  )
+  render() {
+    const { memory, rip, old, classes } = this.props;
+
+    return (
+      <div className={classes.root}>
+        <pre className={classes.pre}>
+          {memory && memory.map((byte, index) =>
+            <Byte
+              key={index}
+              index={index}
+              byte={byte}
+              outlined={index === rip}
+              highlight={old && old[index] !== byte}
+              classes={classes}
+            />
+          )}
+        </pre>
+      </div>
+    )
+  }
 }
 
-export default MemoryPanel;
+export default withStyles(styles)(MemoryPanel);

@@ -5,7 +5,8 @@ import {
   AppBar,
   Toolbar,
   Typography,
-  InputBase
+  InputBase,
+  Tooltip
 } from '@material-ui/core'
 
 import WifiTetheringIcon from '@material-ui/icons/WifiTethering'
@@ -68,6 +69,11 @@ function ApplicationBar(props) {
     });
   }
 
+  const handleClick = () => {
+    if (!props.connected)
+      props.onUrlChange(state.value);
+  }
+
   const classes = useStyles();
 
   return (
@@ -76,21 +82,29 @@ function ApplicationBar(props) {
         <div className={classes.title}>
           <Typography variant="h6" noWrap>y64 Playground</Typography>
         </div>
-        <div className={classes.url}>
-          <div className={classes.status}>
-            {props.connected ?
-            <WifiTetheringIcon /> :
-            <PortableWifiOffIcon color="error" />
-            }
+        <Tooltip title={
+          props.connected ?
+            `Connected at ${props.currentBacked}` :
+            'Disconnected'
+        }>
+          <div className={classes.url}>
+              <div className={classes.status}>
+                {props.connected ?
+                <WifiTetheringIcon /> :
+                <PortableWifiOffIcon color="error" />
+                }
+              </div>
+            <InputBase
+              classes={{input: classes.urlInput}}
+              placeholder={props.currentBacked}
+              defaultValue={props.defaultValue}
+              onChange={handleChange}
+              onClick={handleClick}
+              spellCheck={false}
+              error
+              />
           </div>
-          <InputBase
-            classes={{input: classes.urlInput}}
-            placeholder={props.currentBacked}
-            defaultValue={props.defaultValue}
-            onChange={handleChange}
-            error
-          />
-        </div>
+        </Tooltip>
       </Toolbar>
     </AppBar>
   );

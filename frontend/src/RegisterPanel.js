@@ -11,16 +11,23 @@ import {
 } from '@material-ui/core'
 
 import StatusText from './StatusText'
+import { yellow } from '@material-ui/core/colors'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    tableLayout: 'fixed'
-  },
-  header: {
-    backgroundColor: theme.palette.grey[300]
+    tableLayout: 'fixed',
+    '& th:first-of-type': {
+      borderRight: `1px solid ${theme.palette.divider}`
+    }
   },
   names: {
     width: '25%'
+  },
+  span: {
+    padding: [[0, theme.spacing(1)]]
+  },
+  highlight: {
+    backgroundColor: yellow[300]
   },
   na: {
     color: theme.palette.text.hint,
@@ -28,8 +35,53 @@ const useStyles = makeStyles(theme => ({
   }
 }))
 
+function Cell({ left, right, highlight }) {
+  const classes = useStyles();
+
+  return (
+    <React.Fragment>
+      <TableCell align="right">
+        <span className={[
+          classes.span,
+          highlight && classes.highlight
+        ].join(' ')}>
+          {left}
+        </span>
+      </TableCell>
+      <TableCell align="right">
+        <span className={[
+          classes.span,
+          highlight && classes.highlight
+        ].join(' ')}>
+          {right}
+        </span>
+      </TableCell>
+    </React.Fragment>
+  )
+}
+
+function RegisterValue({
+  value,
+  hex,
+  translate,
+  highlight
+}) {
+  return translate ?
+  <Cell
+    left={<StatusText state={parseInt(value)} />}
+    right="(Not Available)"
+    highlight={highlight}
+  /> :
+  <Cell
+    left={value}
+    right={hex === null ? '(Not Available)' : `0x${hex}`}
+    highlight={highlight}
+  />;
+}
+
 function RegisterPanel({
   data,
+  old,
   translateState
 }) {
   const classes = useStyles();
@@ -41,6 +93,7 @@ function RegisterPanel({
   let rows = []
   for (const key in data) {
     const [value, hex] = data[key];
+    const highlight = old && key in old && value !== old[key][0];
 
     rows.push(
       <TableRow key={key}>
@@ -49,20 +102,12 @@ function RegisterPanel({
           scope="row"
           align="center"
         >{key}</TableCell>
-        {
-          translateState && key === 'state' ?
-          <React.Fragment>
-            <TableCell align="right">
-              <StatusText state={parseInt(value)} />
-            </TableCell>
-            <TableCell align="right">(Not Available)</TableCell>
-          </React.Fragment>
-        :
-          <React.Fragment>
-            <TableCell align="right">{value}</TableCell>
-            <TableCell align="right">{hex === null ? '(Not Available)' : `0x${hex}`}</TableCell>
-          </React.Fragment>
-        }
+        <RegisterValue
+          value={value}
+          hex={hex}
+          translate={translateState && key === 'state'}
+          highlight={highlight}
+        />
       </TableRow>
     )
   }
@@ -72,7 +117,7 @@ function RegisterPanel({
       size="small"
       classes={{root: classes.root}}
     >
-      <TableHead className={classes.header}>
+      <TableHead>
         <TableRow>
           <TableCell align="center" className={classes.names}>Name</TableCell>
           <TableCell align="right">Value</TableCell>

@@ -20,7 +20,10 @@ const useStyles = makeStyles(theme => ({
   panel: {
     margin: [theme.spacing(1.5), '!important'],
     borderRadius: '0 !important',
-    backgroundColor: theme.palette.grey[200]
+    backgroundColor: theme.palette.grey[100],
+    '&:before': {
+      display: 'none'
+    }
   },
   summary: {
     transition: [
@@ -29,11 +32,15 @@ const useStyles = makeStyles(theme => ({
     ]
   },
   summaryDark: {
-    backgroundColor: theme.palette.grey[200]
+    backgroundColor: theme.palette.grey[100]
   },
   summaryLight: {
     color: [theme.palette.common.white, `!important`],
     backgroundColor: '#4dc8ab'
+  },
+  summaryError: {
+    color: [theme.palette.common.white, `!important`],
+    backgroundColor: theme.palette.error.light
   },
   stageNameDiv: {
     flexBasis: '16%',
@@ -55,10 +62,16 @@ const useStyles = makeStyles(theme => ({
 function Instruction({
   name,
   literal,
-  regs
+  registers,
+  old_registers,
+  variant
 }) {
   const classes = useStyles();
-  const light = literal !== '(no instruction)' && literal !== '';
+  const summaryClass = {
+    'none': classes.summaryDark,
+    'light': classes.summaryLight,
+    'error': classes.summaryError
+  }[variant];
 
   return (
     <ExpansionPanel
@@ -68,8 +81,7 @@ function Instruction({
       <ExpansionPanelSummary
         expandIcon={<ExpandMoreIcon />}
         classes={{root: [
-          classes.summary,
-          light ? classes.summaryLight : classes.summaryDark
+          classes.summary, summaryClass
         ].join(' ')}}
       >
         <div className={classes.stageNameDiv}>
@@ -81,7 +93,8 @@ function Instruction({
       </ExpansionPanelSummary>
       <ExpansionPanelDetails classes={{root: classes.details}}>
         <RegisterPanel
-          data={regs}
+          data={registers}
+          old={old_registers}
           translateState
         />
       </ExpansionPanelDetails>
@@ -90,51 +103,41 @@ function Instruction({
 }
 
 function InstructionPanel({
-  stages
+  stages,
+  old
 }) {
   const classes = useStyles();
+  const names = [
+    'write',
+    'memory',
+    'execute',
+    'decode',
+    'fetch'
+  ];
 
-  if (stages === null || stages === undefined) {
-    return (
-      <div className={classes.root}>
-        <Instruction name="WRITE" literal="(no instruction)" />
-        <Instruction name="MEMORY" literal="(no instruction)" />
-        <Instruction name="EXECUTE" literal="(no instruction)" />
-        <Instruction name="DECODE" literal="(no instruction)" />
-        <Instruction name="FETCH" literal="(no instruction)" />
-      </div>
-    )
-  } else {
-    return (
-      <div className={classes.root}>
-        <Instruction
-          name="WRITE"
-          literal={stages.write.instruction.literal}
-          regs={stages.write.registers}
-        />
-        <Instruction
-          name="MEMORY"
-          literal={stages.memory.instruction.literal}
-          regs={stages.memory.registers}
-        />
-        <Instruction
-          name="EXECUTE"
-          literal={stages.execute.instruction.literal}
-          regs={stages.execute.registers}
-        />
-        <Instruction
-          name="DECODE"
-          literal={stages.decode.instruction.literal}
-          regs={stages.decode.registers}
-        />
-        <Instruction
-          name="FETCH"
-          literal={stages.fetch.instruction.literal}
-          regs={stages.fetch.registers}
-        />
-      </div>
-    )
-  }
+  return (
+    <div className={classes.root}>
+      {names.map(name => {
+        const stage = stages[name];
+        const literal = stage.instruction.literal;
+
+        return <Instruction
+          key={name}
+          name={name.toUpperCase()}
+          literal={literal}
+          registers={stage.registers}
+          old_registers={old[name].registers}
+          variant={
+            stage.registers === null || literal === '(no instruction)' ?
+              'none' : (
+                stage.registers.state[0] === 1 ?
+                  'light' : 'error'
+              )
+          }
+        />;
+      })}
+    </div>
+  )
 }
 
 export default InstructionPanel;

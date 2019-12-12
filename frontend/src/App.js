@@ -1,6 +1,5 @@
 import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
-import { withCookies } from 'react-cookie'
 
 import {
   CssBaseline,
@@ -24,8 +23,6 @@ import LoggingTerminal from './LoggingTerminal'
 import PipelinePresentation from './PipelinePresentation'
 import RegisterPage from './RegisterPage'
 import MemoryPanel from './MemoryPanel'
-
-const defaultBackend = 'http://localhost:5000/';
 
 const styles = theme => ({
   main: {
@@ -77,6 +74,64 @@ const styles = theme => ({
   }
 })
 
+const DEFAULT_BACKEND = 'http://localhost:5000/';
+const DEFAULT_INTERVAL = 1000;
+const EMPTY_FRAME = {
+  cycle: 0,
+  state: 0,
+  rip: 0,
+  registers: null,
+  cc: null,
+  memory: [],
+  stages: {
+    fetch: {
+      instruction: {
+        literal: '(no instruction)'
+      },
+      registers: null
+    },
+    decode: {
+      instruction: {
+        literal: '(no instruction)'
+      },
+      registers: null
+    },
+    execute: {
+      instruction: {
+        literal: '(no instruction)'
+      },
+      registers: null
+    },
+    memory: {
+      instruction: {
+        literal: '(no instruction)'
+      },
+      registers: null
+    },
+    write: {
+      instruction: {
+        literal: '(no instruction)'
+      },
+      registers: null
+    }
+  }
+}
+
+function prepareLocalStorage() {
+  const defaults = {
+    code: '',
+    language: 'yo',
+    backend: DEFAULT_BACKEND,
+    'setting.interval': DEFAULT_INTERVAL,
+  };
+
+  for (const key in defaults) {
+    const value = defaults[key];
+    if (window.localStorage.getItem(key) === null)
+      window.localStorage.setItem(key, value);
+  }
+}
+
 class App extends React.Component {
   constructor(props) {
     super(props);
@@ -85,14 +140,14 @@ class App extends React.Component {
     this.UPDATED = <CheckCircleIcon color="primary" />;
     this.FAILED = <CancelIcon color="error" />;
 
-    this.DEFAULT_INTERVAL = 1000;
+    prepareLocalStorage();
 
     this.state = {
       connected: false,
-      backendUrl: defaultBackend,
+      backendUrl: window.localStorage.getItem('backend'),
 
-      code: '',
-      language: 'yo',
+      code: window.localStorage.getItem('code'),
+      language: window.localStorage.getItem('language'),
       diagnostics: [],
 
       frames: [],
@@ -100,7 +155,7 @@ class App extends React.Component {
 
       errorStatusText: '',
 
-      simulationInterval: this.DEFAULT_INTERVAL,
+      simulationInterval: window.localStorage.getItem('setting.interval'),
       simulateTimeoutHandle: null,
       playing: false,
       logging: [
@@ -224,7 +279,8 @@ class App extends React.Component {
       this.checkConnection(new URL(value));
       this.setState({
         backendUrl: value
-      })
+      });
+      window.localStorage.setItem('backend', value);
     } catch {
       this.appendLogging('warn', `Invalid URL "${value}".`)
     }
@@ -240,7 +296,8 @@ class App extends React.Component {
   handleLanguageChange = value => {
     this.setState({
       language: value
-    })
+    });
+    window.localStorage.setItem('language', value);
   }
 
   handleSaveViewState = state => {
@@ -254,6 +311,9 @@ class App extends React.Component {
       codeEditorDisableCompile: true,
       codeEditorQuerying: true
     })
+
+    console.debug('Saving code...');
+    window.localStorage.setItem('code', this.state.code);
 
     this.invokeApi('parse', {
       type: this.state.language,
@@ -435,46 +495,36 @@ class App extends React.Component {
   }
 
   getCurrentFrame = () => {
-    if (this.state.frames.length > 0)
+    if (this.state.frames.length > this.state.frameIndex)
       return this.state.frames[this.state.frameIndex];
-    return null;
+    return EMPTY_FRAME;
+  }
+
+  getPreviousFrame = () => {
+    if (this.state.frameIndex > 0)
+      return this.state.frames[this.state.frameIndex - 1];
+    return EMPTY_FRAME;
   }
 
   handleSetSimulationTimeInterval = (event, value) => {
     this.setState({
       simulationInterval: value
-    })
+    });
+    window.localStorage.setItem('setting.interval', value);
   }
 
   render() {
     const { classes } = this.props;
 
+    const old = this.getPreviousFrame();
     const frame = this.getCurrentFrame();
-    let file = null;
-    let cc = null;
-    let rip = null;
-    let state = null;
-    let old_memory = null;
-    let memory = null;
-    if (frame !== null) {
-      file = frame.registers;
-      cc = frame.cc;
-      rip = frame.rip;
-      state = frame.state;
-      memory = frame.memory;
-      old_memory =
-        this.state.frameIndex > 0 ?
-        this.state.frames[this.state.frameIndex - 1].memory :
-        null;
-    }
-
     return (
       <React.Fragment>
         <CssBaseline />
         <div>
           <ApplicationBar
             connected={this.state.connected}
-            defaultValue={defaultBackend}
+            defaultValue={this.state.backendUrl}
             onUrlChange={this.handleUrlChange}
             currentBacked={this.state.backendUrl}
           />
@@ -510,27 +560,32 @@ class App extends React.Component {
                         onCompile={this.handleCompileAndLoad}
                       />
                     </React.Fragment>,
+
                     <React.Fragment>
                       <div className={classes.heading}>
                         <Typography variant="subtitle2">STATUS</Typography>
                       </div>
                       <RegisterPage
-                        rip={rip}
-                        state={state}
-                        file={file}
-                        cc={cc}
+                        rip={frame.rip}
+                        state={frame.state}
+                        file={frame.registers}
+                        cc={frame.cc}
+                        old_file={old.registers}
+                        old_cc={old.cc}
                       />
                     </React.Fragment>,
+
                     <React.Fragment>
                       <div className={classes.heading}>
                         <Typography variant="subtitle2">MEMORY</Typography>
                       </div>
                       <MemoryPanel
-                        old={old_memory}
-                        memory={memory}
-                        rip={rip}
+                        memory={frame.memory}
+                        old={old.memory}
+                        rip={frame.rip}
                       />
                     </React.Fragment>,
+
                     <React.Fragment>
                       <div className={classes.heading}>
                         <Typography variant="subtitle2">SETTINGS</Typography>
@@ -540,7 +595,6 @@ class App extends React.Component {
                           Simulation Step Interval
                         </Typography>
                         <Slider
-                          defaultValue={this.DEFAULT_INTERVAL}
                           getAriaValueText={value => `${value}ms`}
                           value={this.state.simulationInterval}
                           valueLabelDisplay="auto"
@@ -567,7 +621,8 @@ class App extends React.Component {
                   <PipelinePresentation
                     enabled={this.state.frames.length > 0}
                     playing={this.state.playing}
-                    frame={this.getCurrentFrame()}
+                    frame={frame}
+                    old={old}
                     frameIndex={this.state.frameIndex}
                     status={this.state.errorStatusText}
 
@@ -593,4 +648,4 @@ class App extends React.Component {
   }
 }
 
-export default withCookies(withStyles(styles)(App));
+export default withStyles(styles)(App);

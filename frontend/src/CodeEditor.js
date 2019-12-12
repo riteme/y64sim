@@ -46,7 +46,10 @@ const styles = theme => ({
     flexDirection: 'row'
   },
   compileButton: {
-    transition: theme.transitions.create('color'),
+    transition: [
+      theme.transitions.create('color'),
+      theme.transitions.create('background-color')
+    ],
     borderRadius: 0
   },
   statusIcon: {
@@ -180,6 +183,7 @@ class CodeEditor extends React.Component {
           </div>
           <div className={classes.controlRight}>
             <Button
+              // variant="outlined"
               color="primary"
               onClick={this.props.onCompile}
               classes={{root: classes.compileButton}}

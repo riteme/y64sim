@@ -21,7 +21,10 @@ const useStyles = makeStyles(theme => ({
   panel: {
     margin: [theme.spacing(1.5), '!important'],
     borderRadius: '0 !important',
-    backgroundColor: theme.palette.grey[200]
+    backgroundColor: theme.palette.grey[100],
+    '&:before': {
+      display: 'none'
+    }
   },
   core: {
     display: 'flex',
@@ -40,9 +43,6 @@ const useStyles = makeStyles(theme => ({
     flexGrow: 1,
     textAlign: 'right'
   },
-  na: {
-    color: theme.palette.text.hint
-  },
   details: {
     padding: 0
   }
@@ -52,10 +52,6 @@ function CoreStates({
   rip, state
 }) {
   const classes = useStyles();
-
-  if (rip === null || state === null) return (
-    <Typography variant="body1" className={classes.na}>Not Available</Typography>
-  );
 
   return (
     <div className={classes.core}>
@@ -74,7 +70,7 @@ function CoreStates({
 }
 
 function RegisterPage({
-  rip, state, file, cc
+  rip, state, file, cc, old_file, old_cc
 }) {
   const classes = useStyles();
 
@@ -109,7 +105,7 @@ function RegisterPage({
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails classes={{root: classes.details}}>
-          <RegisterPanel data={file} />
+          <RegisterPanel data={file} old={old_file} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
       <ExpansionPanel
@@ -125,7 +121,7 @@ function RegisterPage({
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails classes={{root: classes.details}}>
-          <RegisterPanel data={cc} />
+          <RegisterPanel data={cc} old={old_cc} />
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </div>

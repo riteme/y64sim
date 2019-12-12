@@ -2,7 +2,7 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import {
-  IconButton, Typography, Fade
+  IconButton, Typography, Fade, Tooltip
 } from '@material-ui/core'
 
 import RefreshIcon from '@material-ui/icons/Refresh'
@@ -70,8 +70,10 @@ function PipelinePresentation({
   enabled,
   playing,
   frame,
+  old,
   frameIndex,
   status,
+
   onReset,
   onStartPlay,
   onPause,
@@ -79,8 +81,7 @@ function PipelinePresentation({
   onGoNext
 }) {
   const classes = useStyles();
-
-  const inError = frame !== null && frame.state !== 1;
+  const inError = frame.state > 1;
 
   return (
     <div className={classes.root}>
@@ -89,33 +90,43 @@ function PipelinePresentation({
         inError && classes.controlInError
       ].join(' ')}>
         <div className={classes.controlButtons}>
-          <IconButton
-            size="small"
-            disabled={!enabled || playing || frameIndex === 0}
-            onClick={onReset}
-          ><RefreshIcon /></IconButton>
+          <Tooltip title="Reset"><span>
+            <IconButton
+              size="small"
+              disabled={!enabled || playing || frameIndex === 0}
+              onClick={onReset}
+            ><RefreshIcon /></IconButton>
+          </span></Tooltip>
           { !playing ?
-            <IconButton
-              size="small"
-              disabled={!enabled}
-              onClick={onStartPlay}
-            ><PlayArrowIcon /></IconButton> :
-            <IconButton
-              size="small"
-              disabled={!enabled}
-              onClick={onPause}
-            ><PauseIcon /></IconButton>
+            <Tooltip title="Run"><span>
+              <IconButton
+                size="small"
+                disabled={!enabled}
+                onClick={onStartPlay}
+              ><PlayArrowIcon /></IconButton>
+            </span></Tooltip> :
+            <Tooltip title="Pause"><span>
+              <IconButton
+                size="small"
+                disabled={!enabled}
+                onClick={onPause}
+              ><PauseIcon /></IconButton>
+            </span></Tooltip>
           }
-          <IconButton
-            size="small"
-            disabled={!enabled || playing || frameIndex === 0}
-            onClick={onGoPrev}
-          ><NavigateBeforeIcon /></IconButton>
-          <IconButton
-            size="small"
-            disabled={!enabled || playing}
-            onClick={onGoNext}
-          ><NavigateNextIcon /></IconButton>
+          <Tooltip title="Previous"><span>
+            <IconButton
+              size="small"
+              disabled={!enabled || playing || frameIndex === 0}
+              onClick={onGoPrev}
+            ><NavigateBeforeIcon /></IconButton>
+          </span></Tooltip>
+          <Tooltip title="Next"><span>
+            <IconButton
+              size="small"
+              disabled={!enabled || playing}
+              onClick={onGoNext}
+            ><NavigateNextIcon /></IconButton>
+          </span></Tooltip>
         </div>
         <div className={classes.controlStatus}>
           <Fade in={inError}>
@@ -131,7 +142,10 @@ function PipelinePresentation({
         </div>
       </div>
       <div className={classes.pipeline}>
-        <InstructionPanel stages={frame === null ? null : frame.stages} />
+        <InstructionPanel
+          stages={frame.stages}
+          old={old.stages}
+        />
       </div>
     </div>
   )
