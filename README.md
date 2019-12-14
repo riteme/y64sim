@@ -85,17 +85,15 @@ pip install Flask==1.1.1 flask-cors==3.0.8
 来启动后端服务器。默认服务器地址在 `http://localhost:5000/`。
 
 ### 前端
-安装完 NPM 后，进入 `frontend` 目录，使用以下命令编译前端：
+上传的 `tar` 包没有带上 `node_modules`，不能重新编译。
+
+在本地运行前端服务器：
 
 ```shell
-npm run build
-```
-
-编译成功后，在本地运行前端服务器：
-
-```shell
-npm install -g serve
+sudo npm install -g serve
 serve -s build -l 3000
 ```
+
+注意运行 `npm install -g serve` 需要 `root` 权限（`sudo`）。
 
 打开 Chrome/Firefox，进入 `http://localhost:3000/` 即可看到前端页面。

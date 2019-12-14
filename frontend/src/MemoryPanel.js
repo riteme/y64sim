@@ -1,12 +1,12 @@
 import React from 'react'
-import { withStyles } from '@material-ui/core/styles'
+import { makeStyles } from '@material-ui/core/styles'
 
 import {
   Tooltip
  } from '@material-ui/core'
 import { yellow } from '@material-ui/core/colors'
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -41,50 +41,84 @@ const styles = theme => ({
   outlined: {
     outline: '2px solid red'
   }
-})
+}));
 
 function Byte({
   byte, index, outlined, highlight, classes
 }) {
   return (
-    <Tooltip title={`0x${index.toString(16)}`}>
+    // <Tooltip title={`0x${index.toString(16)}`}>
       <span className={[
         classes.byte,
         outlined && classes.outlined,
         highlight && classes.highlight
       ].join(' ')}>{byte}</span>
-    </Tooltip>
+    // </Tooltip>
   )
 }
 
-class MemoryPanel extends React.PureComponent {
+class MemoryNode extends React.Component {
   shouldComponentUpdate(nextProps) {
-    return (
-      this.props.rip !== nextProps.rip ||
-      this.props.memory !== nextProps.memory
-    )
+    const { node, old, rip } = this.props;
+    return node === null || nextProps.node === null ||
+      (node.left <= rip && rip <= node.right) ||
+      (nextProps.node.left <= nextProps.rip && nextProps.rip <= nextProps.node.right) ||
+      node.value !== nextProps.node.value ||
+      (old && node.value !== old.value);
   }
 
   render() {
-    const { memory, rip, old, classes } = this.props;
+    const {
+      node, old, rip, classes
+    } = this.props;
+    if (node === null)
+      return null;
+
+    if (node.left === node.right)
+      return <Byte
+        byte={node.literal}
+        index={node.left}
+        outlined={node.left === rip}
+        highlight={old && node.value !== old.value}
+        classes={classes}
+      />;
 
     return (
-      <div className={classes.root}>
-        <pre className={classes.pre}>
-          {memory && memory.map((byte, index) =>
-            <Byte
-              key={index}
-              index={index}
-              byte={byte}
-              outlined={index === rip}
-              highlight={old && old[index] !== byte}
-              classes={classes}
-            />
-          )}
-        </pre>
-      </div>
+      <React.Fragment>
+        <MemoryNode
+          node={node.lch}
+          old={old && old.lch}
+          rip={rip}
+          classes={classes}
+        />
+        <MemoryNode
+          node={node.rch}
+          old={old && old.rch}
+          rip={rip}
+          classes={classes}
+        />
+      </React.Fragment>
     )
   }
 }
 
-export default withStyles(styles)(MemoryPanel);
+function MemoryPanel({
+  tree, old, rip
+}) {
+  const classes = useStyles();
+
+  return (
+    <div className={classes.root}>
+      <pre className={classes.pre}>
+        <MemoryNode
+          node={tree}
+          old={old}
+          rip={rip}
+          classes={classes}
+        />
+      </pre>
+    </div>
+  )
+}
+
+export default MemoryPanel;

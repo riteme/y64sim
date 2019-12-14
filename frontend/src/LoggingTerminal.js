@@ -2,14 +2,20 @@ import React from 'react'
 import { withStyles } from '@material-ui/core/styles'
 
 import {
-  Box, Typography
+  Box, Typography, Tooltip, IconButton
 } from '@material-ui/core'
 
+import ClearAllIcon from '@material-ui/icons/ClearAll'
+
 const styles = theme => ({
-  heading: {
-    padding: theme.spacing(0.5),
-    color: theme.palette.grey[600],
+  root: {
+    display: 'flex',
     borderBottom: `1px solid ${theme.palette.divider}`
+  },
+  heading: {
+    flexGrow: 1,
+    padding: theme.spacing(0.5),
+    color: theme.palette.grey[600]
   },
   pre: {
     overflow: 'auto',
@@ -39,8 +45,18 @@ class LoggingTerminal extends React.Component {
 
     return (
       <div>
-        <div className={classes.heading}>
-          <Typography variant="subtitle2">CONSOLE OUTPUT</Typography>
+        <div className={classes.root}>
+          <div className={classes.heading}>
+            <Typography variant="subtitle2">CONSOLE OUTPUT</Typography>
+          </div>
+          <div>
+            <Tooltip title="Clear Output"><span>
+              <IconButton
+                size="small"
+                onClick={this.props.onClearLogging}
+              ><ClearAllIcon /></IconButton>
+            </span></Tooltip>
+          </div>
         </div>
         <div>
           <Box

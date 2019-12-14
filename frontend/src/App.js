@@ -4,8 +4,7 @@ import { withStyles } from '@material-ui/core/styles'
 import {
   CssBaseline,
   Grid,
-  Typography,
-  Slider
+  Typography
 } from '@material-ui/core'
 
 import CodeIcon from '@material-ui/icons/Code'
@@ -23,6 +22,10 @@ import LoggingTerminal from './LoggingTerminal'
 import PipelinePresentation from './PipelinePresentation'
 import RegisterPage from './RegisterPage'
 import MemoryPanel from './MemoryPanel'
+import LegecyMemoryPanel from './LegacyMemoryPanel'
+import Settings from './Settings'
+
+import * as algo from './algo'
 
 const styles = theme => ({
   main: {
@@ -52,9 +55,6 @@ const styles = theme => ({
     height: '100%',
     borderBottom: `1px solid ${theme.palette.divider}`
   },
-  settings: {
-    padding: theme.spacing(4)
-  },
   heading: {
     padding: theme.spacing(0.5),
     color: theme.palette.grey[600],
@@ -83,6 +83,7 @@ const EMPTY_FRAME = {
   registers: null,
   cc: null,
   memory: [],
+  tree: null,
   stages: {
     fetch: {
       instruction: {
@@ -123,6 +124,7 @@ function prepareLocalStorage() {
     language: 'yo',
     backend: DEFAULT_BACKEND,
     'setting.interval': DEFAULT_INTERVAL,
+    'setting.useLegacyMemoryPanel': 0
   };
 
   for (const key in defaults) {
@@ -155,12 +157,14 @@ class App extends React.Component {
 
       errorStatusText: '',
 
-      simulationInterval: window.localStorage.getItem('setting.interval'),
+      simulationInterval: parseInt(window.localStorage.getItem('setting.interval')),
       simulateTimeoutHandle: null,
       playing: false,
       logging: [
         <span>Welcome to y64 Playground!</span>
       ],
+
+      useLegacyMemoryPanel: parseInt(window.localStorage.getItem('setting.useLegacyMemoryPanel')),
 
       codeEditorDisableCompile: false,
       codeEditorStatus: this.UNKNOWN,
@@ -232,6 +236,13 @@ class App extends React.Component {
     return response.json();
   }
 
+  extendFrame(frame) {
+    return {
+      ...frame,
+      tree: algo.buildMemoryTree(frame.memory)
+    };
+  }
+
   resolveParseResult = result => {
     console.debug(result);
 
@@ -246,7 +257,7 @@ class App extends React.Component {
       .then(result => {
         this.appendLogging('info', 'First frame loaded.')
         this.setState({
-          frames: [result.frame],
+          frames: [this.extendFrame(result.frame)],
           frameIndex: 0,
           playing: false
         })
@@ -359,7 +370,7 @@ class App extends React.Component {
       const result = await r.json();
       if (result.status === 'ok') {
         this.setState(state => ({
-          frames: state.frames.concat(result.frame)
+          frames: state.frames.concat(this.extendFrame(result.frame))
         }));
 
         for (const { level, message } of result.messages)
@@ -483,10 +494,13 @@ class App extends React.Component {
   }
 
   handleGoPrev = () => {
-    this.appendLogging('info', `Navigate to previous frame. [cycle = ${this.state.frameIndex - 1}]`);
-    this.setState(state => ({
-      frameIndex: state.frameIndex > 0 ? state.frameIndex - 1 : 0
-    }))
+    this.setState(state => {
+      this.appendLogging('info', `Navigate to previous frame. [cycle = ${state.frameIndex - 1}]`);
+
+      return {
+        frameIndex: state.frameIndex > 0 ? state.frameIndex - 1 : 0
+      };
+    })
   }
 
   handleGoNext = () => {
@@ -506,11 +520,24 @@ class App extends React.Component {
     return EMPTY_FRAME;
   }
 
-  handleSetSimulationTimeInterval = (event, value) => {
+  handleSetSimulationInterval = (event, value) => {
     this.setState({
       simulationInterval: value
     });
     window.localStorage.setItem('setting.interval', value);
+  }
+
+  handleClearLogging = () => {
+    this.setState({
+      logging: []
+    })
+  }
+
+  handleSetUseLegacyMemoryPanel = event => {
+    this.setState({
+      useLegacyMemoryPanel: event.target.checked
+    });
+    window.localStorage.setItem('setting.useLegacyMemoryPanel', Number(event.target.checked));
   }
 
   render() {
@@ -579,39 +606,31 @@ class App extends React.Component {
                       <div className={classes.heading}>
                         <Typography variant="subtitle2">MEMORY</Typography>
                       </div>
-                      <MemoryPanel
-                        memory={frame.memory}
-                        old={old.memory}
-                        rip={frame.rip}
-                      />
+                      {this.state.useLegacyMemoryPanel ?
+                        <LegecyMemoryPanel
+                          memory={frame.memory}
+                          old={old.memory}
+                          rip={frame.rip}
+                        /> :
+                        <MemoryPanel
+                          tree={frame.tree}
+                          old={old.tree}
+                          rip={frame.rip}
+                        />
+                      }
                     </React.Fragment>,
 
                     <React.Fragment>
                       <div className={classes.heading}>
                         <Typography variant="subtitle2">SETTINGS</Typography>
                       </div>
-                      <div className={classes.settings}>
-                        <Typography variant="subtitle1">
-                          Simulation Step Interval
-                        </Typography>
-                        <Slider
-                          getAriaValueText={value => `${value}ms`}
-                          value={this.state.simulationInterval}
-                          valueLabelDisplay="auto"
-                          step={50}
-                          min={50}
-                          max={5000}
-                          marks={[
-                            {value: 50, label: '50ms'},
-                            {value: 1000, label: '1s'},
-                            {value: 2000, label: '2s'},
-                            {value: 3000, label: '3s'},
-                            {value: 4000, label: '4s'},
-                            {value: 5000, label: '5s'}
-                          ]}
-                          onChange={this.handleSetSimulationTimeInterval}
-                        />
-                      </div>
+                      <Settings
+                        simulationInterval={this.state.simulationInterval}
+                        onSetSimulationInterval={this.handleSetSimulationInterval}
+
+                        useLegacyMemoryPanel={this.state.useLegacyMemoryPanel}
+                        onSetUseLegacyMemoryPanel={this.handleSetUseLegacyMemoryPanel}
+                      />
                     </React.Fragment>
                   ]}
                 />
@@ -637,6 +656,7 @@ class App extends React.Component {
                   <LoggingTerminal
                     messages={this.state.logging}
                     height={280}
+                    onClearLogging={this.handleClearLogging}
                   />
                 </div>
               </Grid>
