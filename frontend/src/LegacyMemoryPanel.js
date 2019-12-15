@@ -47,13 +47,13 @@ function Byte({
   byte, index, outlined, highlight, classes
 }) {
   return (
-    // <Tooltip title={`0x${index.toString(16)}`}>
+    <Tooltip title={`0x${index.toString(16)}`}>
       <span className={[
         classes.byte,
         outlined && classes.outlined,
         highlight && classes.highlight
       ].join(' ')}>{byte}</span>
-    // </Tooltip>
+    </Tooltip>
   )
 }
 

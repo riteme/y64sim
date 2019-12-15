@@ -2,7 +2,9 @@ import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 
 import {
-  IconButton, Typography, Fade, Tooltip
+  IconButton, Typography,
+  Fade, Tooltip,
+  Slider
 } from '@material-ui/core'
 
 import RefreshIcon from '@material-ui/icons/Refresh'
@@ -10,6 +12,7 @@ import PlayArrowIcon from '@material-ui/icons/PlayArrow'
 import PauseIcon from '@material-ui/icons/Pause'
 import NavigateBeforeIcon from '@material-ui/icons/NavigateBefore'
 import NavigateNextIcon from '@material-ui/icons/NavigateNext'
+import QueryBuilderIcon from '@material-ui/icons/QueryBuilder'
 
 import InstructionPanel from './InstructionPanel'
 
@@ -63,6 +66,32 @@ const useStyles = makeStyles(theme => ({
   },
   pipeline: {
     height: '100%'
+  },
+  sliderDiv: {
+    lineHeight: 0
+  },
+  slider: {
+    height: 5,
+    padding: 0,
+    transition: theme.transitions.create('color')
+  },
+  thumb: {
+    display: 'none'
+  },
+  rail: {
+    height: 5
+  },
+  track: {
+    height: 5
+  },
+  trackAnimation: {
+    transition: theme.transitions.create('width')
+  },
+  clockDiv: {
+    padding: [[0, theme.spacing(0.5)]],
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center'
   }
 }))
 
@@ -72,13 +101,16 @@ function PipelinePresentation({
   frame,
   old,
   frameIndex,
+  numberOfFrames,
   status,
+  isFast,
 
   onReset,
   onStartPlay,
   onPause,
   onGoPrev,
-  onGoNext
+  onGoNext,
+  onIndexChange
 }) {
   const classes = useStyles();
   const inError = frame.state > 1;
@@ -136,6 +168,11 @@ function PipelinePresentation({
           </Fade>
         </div>
         <div className={classes.controlCycleDisplay}>
+          <Fade in={playing}>
+            <div className={classes.clockDiv}>
+              <QueryBuilderIcon />
+            </div>
+          </Fade>
           <Typography variant="body1">
             Cycle {frameIndex}
           </Typography>
@@ -145,6 +182,22 @@ function PipelinePresentation({
         <InstructionPanel
           stages={frame.stages}
           old={old.stages}
+        />
+      </div>
+      <div className={classes.sliderDiv}>
+        <Slider
+          min={0}
+          max={numberOfFrames && numberOfFrames - 1}
+          step={1}
+          value={frameIndex}
+          onChange={(event, value) => onIndexChange(value)}
+          disabled={!enabled || playing}
+          classes={{
+            root: classes.slider,
+            thumb: classes.thumb,
+            rail: classes.rail,
+            track: [classes.track, (!playing || !isFast) && classes.trackAnimation].join(' ')
+          }}
         />
       </div>
     </div>

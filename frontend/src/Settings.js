@@ -36,7 +36,6 @@ function Settings({
           Simulation step interval:
         </Typography>
         <Slider
-          getAriaValueText={value => `${value}ms`}
           value={simulationInterval}
           valueLabelDisplay="auto"
           step={50}

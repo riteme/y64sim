@@ -540,6 +540,12 @@ class App extends React.Component {
     window.localStorage.setItem('setting.useLegacyMemoryPanel', Number(event.target.checked));
   }
 
+  handleIndexChange = value => {
+    this.setState({
+      frameIndex: value
+    })
+  }
+
   render() {
     const { classes } = this.props;
 
@@ -643,13 +649,16 @@ class App extends React.Component {
                     frame={frame}
                     old={old}
                     frameIndex={this.state.frameIndex}
+                    numberOfFrames={this.state.frames.length}
                     status={this.state.errorStatusText}
+                    isFast={this.state.simulationInterval <= 150}
 
                     onReset={this.handleReset}
                     onStartPlay={this.handleStartPlay}
                     onPause={this.handlePause}
                     onGoPrev={this.handleGoPrev}
                     onGoNext={this.handleGoNext}
+                    onIndexChange={this.handleIndexChange}
                   />
                 </div>
                 <div>
