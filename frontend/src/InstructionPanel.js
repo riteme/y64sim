@@ -128,11 +128,8 @@ function InstructionPanel({
           registers={stage.registers}
           old_registers={old[name].registers}
           variant={
-            stage.registers === null || literal === '(no instruction)' ?
-              'none' : (
-                stage.registers.state[0] === 1 ?
-                  'light' : 'error'
-              )
+            stage.registers !== null && stage.registers.state[0] !== 1 ?
+              'error' : (literal === '(no instruction)' ? 'none' : 'light')
           }
         />;
       })}
