@@ -21,6 +21,7 @@ const useStyles = makeStyles(theme => ({
     display: 'flex',
     flexDirection: 'column',
     height: '100%',
+    overflow: 'hidden'
   },
   control: {
     color: theme.palette.grey[700],
@@ -65,7 +66,8 @@ const useStyles = makeStyles(theme => ({
     color: 'inherit'
   },
   pipeline: {
-    height: '100%'
+    height: '100%',
+    overflow: 'overlay'
   },
   sliderDiv: {
     lineHeight: 0

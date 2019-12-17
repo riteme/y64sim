@@ -35,6 +35,7 @@ const styles = theme => ({
     overflow: 'hidden'
   },
   container: {
+    overflow: 'hidden',
     height: '100%'
   },
   page: {
@@ -49,11 +50,6 @@ const styles = theme => ({
     display: 'flex',
     flexDirection: 'column',
     borderLeft: `1px solid ${theme.palette.divider}`
-  },
-  presentationDiv: {
-    width: '100%',
-    height: '100%',
-    borderBottom: `1px solid ${theme.palette.divider}`
   },
   heading: {
     padding: theme.spacing(0.5),
@@ -642,7 +638,6 @@ class App extends React.Component {
                 />
               </Grid>
               <Grid item xs={6} className={[classes.page, classes.pageRight].join(' ')}>
-                <div className={classes.presentationDiv}>
                   <PipelinePresentation
                     enabled={this.state.frames.length > 0}
                     playing={this.state.playing}
@@ -660,7 +655,6 @@ class App extends React.Component {
                     onGoNext={this.handleGoNext}
                     onIndexChange={this.handleIndexChange}
                   />
-                </div>
                 <div>
                   <LoggingTerminal
                     messages={this.state.logging}

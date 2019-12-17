@@ -13,10 +13,6 @@ import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
 import RegisterPanel from './RegisterPanel'
 
 const useStyles = makeStyles(theme => ({
-  root: {
-    height: '100%',
-    overflow: 'auto'
-  },
   panel: {
     margin: [theme.spacing(1.5), '!important'],
     borderRadius: '0 !important',
@@ -106,7 +102,6 @@ function InstructionPanel({
   stages,
   old
 }) {
-  const classes = useStyles();
   const names = [
     'write',
     'memory',
@@ -116,7 +111,7 @@ function InstructionPanel({
   ];
 
   return (
-    <div className={classes.root}>
+    <React.Fragment>
       {names.map(name => {
         const stage = stages[name];
         const literal = stage.instruction.literal;
@@ -133,7 +128,7 @@ function InstructionPanel({
           }
         />;
       })}
-    </div>
+    </React.Fragment>
   )
 }
 
